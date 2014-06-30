@@ -73,7 +73,12 @@ minetest.register_node("default:mese", {
 	sounds = default.node_sound_stone_defaults(),
 })
 minetest.register_alias("default:mese_block", "default:mese")
+
 minetest.register_alias("default:bronzeblock", "default:steelblock")
+minetest.register_alias("default:pick_bronze", "default:pick_steel")
+minetest.register_alias("default:shovel_bronze", "default:shovel_steel")
+minetest.register_alias("default:axe_bronze", "default:axe_steel")
+minetest.register_alias("default:sword_bronze", "default:sword_steel")
 
 minetest.register_node("default:stone_with_diamond", {
 	description = "Diamond Ore",
