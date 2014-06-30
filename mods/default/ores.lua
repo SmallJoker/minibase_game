@@ -54,16 +54,7 @@ default.register_tools_block_craft("default", "coal", "default:coal_lump", true)
 default.register_tools_block_craft("default", "copper", "default:copper_ingot", true)
 default.register_tools_block_craft("default", "gold", "default:gold_ingot", true)
 default.register_tools_block_craft("default", "steel", "default:steel_ingot")
-default.register_tools_block_craft("default", "bronze", "default:bronze_ingot")
 default.register_tools_block_craft("default", "diamond", "default:diamond")
-
-minetest.register_node("default:bronzeblock", {
-	description = "Bronze Block",
-	tiles = {"default_bronze_block.png"},
-	is_ground_content = true,
-	groups = {cracky=1,level=2},
-	sounds = default.node_sound_stone_defaults(),
-})
 
 minetest.register_node("default:stone_with_mese", {
 	description = "Mese Ore",
@@ -82,6 +73,7 @@ minetest.register_node("default:mese", {
 	sounds = default.node_sound_stone_defaults(),
 })
 minetest.register_alias("default:mese_block", "default:mese")
+minetest.register_alias("default:bronzeblock", "default:steelblock")
 
 minetest.register_node("default:stone_with_diamond", {
 	description = "Diamond Ore",
