@@ -284,6 +284,79 @@ minetest.register_craft({
 	}
 })
 
+minetest.register_craft({
+	output = "default:pick_wood",
+	recipe = {
+		{"group:wood", "group:wood", "group:wood"},
+		{"", "group:stick", ""},
+		{"", "group:stick", ""},
+	}
+})
+
+minetest.register_craft({
+	output = "default:axe_wood",
+	recipe = {
+		{"group:wood", "group:wood"},
+		{"group:wood", "group:stick"},
+		{"", "group:stick"},
+	}
+})
+	
+minetest.register_craft({
+	output = "default:shovel_wood",
+	recipe = {
+		{"group:wood"},
+		{"group:stick"},
+		{"group:stick"},
+	}
+})
+
+minetest.register_craft({
+	output = "default:sword_wood",
+	recipe = {
+		{"group:wood"},
+		{"group:wood"},
+		{"group:stick"},
+	}
+})
+
+minetest.register_craft({
+	output = "default:pick_stone",
+	recipe = {
+		{"group:stone", "group:stone", "group:stone"},
+		{"", "group:stick", ""},
+		{"", "group:stick", ""},
+	}
+})
+
+minetest.register_craft({
+	output = "default:axe_stone",
+	recipe = {
+		{"group:stone", "group:stone"},
+		{"group:stone", "group:stick"},
+		{"", "group:stick"},
+	}
+})
+	
+minetest.register_craft({
+	output = "default:shovel_stone",
+	recipe = {
+		{"group:stone"},
+		{"group:stick"},
+		{"group:stick"},
+	}
+})
+
+minetest.register_craft({
+	output = "default:sword_stone",
+	recipe = {
+		{"group:stone"},
+		{"group:stone"},
+		{"group:stick"},
+	}
+})
+
+
 --
 -- Crafting (tool repair)
 --
