@@ -8,7 +8,7 @@ minetest.register_alias("bucket_water", "bucket:bucket_water")
 minetest.register_alias("bucket_lava", "bucket:bucket_lava")
 
 minetest.register_craft({
-	output = "bucket:bucket_empty 1",
+	output = "bucket:bucket_empty",
 	recipe = {
 		{"default:steel_ingot", "", "default:steel_ingot"},
 		{"", "default:steel_ingot", ""},
@@ -52,79 +52,78 @@ function bucket.register_liquid(source, flowing, itemname, inventory_image, name
 	}
 	bucket.liquids[flowing] = bucket.liquids[source]
 
-	if itemname ~= nil then
-		minetest.register_craftitem(itemname, {
-			description = name,
-			inventory_image = inventory_image,
-			stack_max = 1,
-			liquids_pointable = true,
-			groups = {not_in_creative_inventory=1},
-			on_place = function(itemstack, user, pointed_thing)
-				-- Must be pointing to node
-				if pointed_thing.type ~= "node" then
+	if itemname then return end
+	minetest.register_craftitem(itemname, {
+		description = name,
+		inventory_image = inventory_image,
+		stack_max = 1,
+		liquids_pointable = true,
+		groups = {not_in_creative_inventory=1},
+		on_place = function(itemstack, user, pointed_thing)
+			-- Must be pointing to node
+			if pointed_thing.type ~= "node" then
+				return
+			end
+			
+			-- Call on_rightclick if the pointed node defines it
+			if user and not user:get_player_control().sneak then
+				local n = minetest.get_node(pointed_thing.under)
+				local nn = n.name
+				if minetest.registered_nodes[nn] and minetest.registered_nodes[nn].on_rightclick then
+					return minetest.registered_nodes[nn].on_rightclick(pointed_thing.under, n, user, itemstack) or itemstack
+				end
+			end
+			
+
+			local place_liquid = function(pos, user, node, source, flowing, fullness)
+				if not minetest.is_singleplayer() then
+					if pos.y > -5 and source == "default:lava_source" then
+						minetest.chat_send_player(user:get_player_name(), "Do not place lava over -5m, that could end really bad!", true)
+						return
+					end
+				end
+				if minetest.is_protected(pos, user:get_player_name()) then
+					minetest.record_protection_violation(pos, user:get_player_name())
 					return
 				end
-				
-				-- Call on_rightclick if the pointed node defines it
-				if user and not user:get_player_control().sneak then
-					local n = minetest.get_node(pointed_thing.under)
-					local nn = n.name
-					if minetest.registered_nodes[nn] and minetest.registered_nodes[nn].on_rightclick then
-						return minetest.registered_nodes[nn].on_rightclick(pointed_thing.under, n, user, itemstack) or itemstack
-					end
-				end
-				
-
-				local place_liquid = function(pos, user, node, source, flowing, fullness)
-					if not minetest.is_singleplayer() then
-						if pos.y > -5 and source == "default:lava_source" then
-							minetest.chat_send_player(user:get_player_name(), "Do not place lava over -5m, that could end really bad!", true)
-							return
-						end
-					end
-					if minetest.is_protected(pos, user:get_player_name()) then
-						minetest.record_protection_violation(pos, user:get_player_name())
-						return
-					end
-					if math.floor(fullness/128) == 1 or (not minetest.setting_getbool("liquid_finite")) then
-						minetest.add_node(pos, {name=source, param2=fullness})
-						return
-					elseif node.name == flowing then
-						fullness = fullness + node.param2
-					elseif node.name == source then
-						fullness = LIQUID_MAX
-					end
-
-					if fullness >= LIQUID_MAX then
-						minetest.add_node(pos, {name=source, param2=LIQUID_MAX})
-					else
-						minetest.add_node(pos, {name=flowing, param2=fullness})
-					end
+				if math.floor(fullness/128) == 1 or (not minetest.setting_getbool("liquid_finite")) then
+					minetest.add_node(pos, {name=source, param2=fullness})
+					return
+				elseif node.name == flowing then
+					fullness = fullness + node.param2
+				elseif node.name == source then
+					fullness = LIQUID_MAX
 				end
 
-				-- Check if pointing to a buildable node
-				local node = minetest.get_node(pointed_thing.under)
-				local fullness = tonumber(itemstack:get_metadata())
-				if not fullness then fullness = LIQUID_MAX end
-
-				if minetest.registered_nodes[node.name].buildable_to and not minetest.registered_nodes[node.name].on_rightclick then
-					-- buildable; replace the node
-					place_liquid(pointed_thing.under, user, node, source, flowing, fullness)
+				if fullness >= LIQUID_MAX then
+					minetest.add_node(pos, {name=source, param2=LIQUID_MAX})
 				else
-					-- not buildable to; place the liquid above
-					-- check if the node above can be replaced
-					local node = minetest.get_node(pointed_thing.above)
-					if minetest.registered_nodes[node.name].buildable_to and not minetest.registered_nodes[node.name].on_rightclick then
-						place_liquid(pointed_thing.above, user, node, source, flowing, fullness)
-					else
-						-- do not remove the bucket with the liquid
-						return
-					end
+					minetest.add_node(pos, {name=flowing, param2=fullness})
 				end
-				return {name="bucket:bucket_empty"}
 			end
-		})
-	end
+
+			-- Check if pointing to a buildable node
+			local node = minetest.get_node(pointed_thing.under)
+			local fullness = tonumber(itemstack:get_metadata())
+			if not fullness then fullness = LIQUID_MAX end
+
+			if minetest.registered_nodes[node.name].buildable_to and not minetest.registered_nodes[node.name].on_rightclick then
+				-- buildable; replace the node
+				place_liquid(pointed_thing.under, user, node, source, flowing, fullness)
+			else
+				-- not buildable to; place the liquid above
+				-- check if the node above can be replaced
+				local node = minetest.get_node(pointed_thing.above)
+				if minetest.registered_nodes[node.name].buildable_to and not minetest.registered_nodes[node.name].on_rightclick then
+					place_liquid(pointed_thing.above, user, node, source, flowing, fullness)
+				else
+					-- do not remove the bucket with the liquid
+					return
+				end
+			end
+			return {name="bucket:bucket_empty"}
+		end
+	})
 end
 
 minetest.register_craftitem("bucket:bucket_empty", {
