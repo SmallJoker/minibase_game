@@ -1,5 +1,5 @@
 minetest.register_craftitem("more_tools:remove_everything", {
-	description = "Remove everything pickaxe",
+	description = "Remove everything tool",
 	inventory_image = "remove_everything.png",
 	stack_max = 1,
 	range = 15,

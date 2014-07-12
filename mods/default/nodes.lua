@@ -1294,6 +1294,10 @@ minetest.register_node("default:snow", {
 		dug = {name="default_snow_footstep", gain=0.75},
 	}),
 	on_dig = function(pos, node, digger)
+		if minetest.is_protected(pos, digger:get_player_name()) then
+			return
+		end
+		
 		local d = minetest.get_node_level(pos)
 		d = (d / 7) - 1
 		if d > 0 then
