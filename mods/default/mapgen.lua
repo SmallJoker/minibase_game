@@ -264,12 +264,10 @@ function default.make_papyrus(pos, size)
 	for y=0,size-1 do
 		local p = {x=pos.x, y=pos.y+y, z=pos.z}
 		local nn = minetest.get_node(p).name
-		if minetest.registered_nodes[nn] and
-			minetest.registered_nodes[nn].buildable_to then
-			minetest.set_node(p, {name="default:papyrus"})
-		else
+		if nn ~= "air" then
 			return
 		end
+		minetest.set_node(p, {name="default:papyrus"})
 	end
 end
 
@@ -277,12 +275,10 @@ function default.make_cactus(pos, size)
 	for y=0,size-1 do
 		local p = {x=pos.x, y=pos.y+y, z=pos.z}
 		local nn = minetest.get_node(p).name
-		if minetest.registered_nodes[nn] and
-			minetest.registered_nodes[nn].buildable_to then
-			minetest.set_node(p, {name="default:cactus"})
-		else
+		if nn ~= "air" then
 			return
 		end
+		minetest.set_node(p, {name="default:cactus"})
 	end
 end
 
@@ -314,7 +310,7 @@ end
 
 function generate_nyancats(seed, minp, maxp)
 	local height_min = -31000
-	local height_max = -32
+	local height_max = 31000
 	if maxp.y < height_min or minp.y > height_max then
 		return
 	end
@@ -336,115 +332,71 @@ end
 
 minetest.register_on_generated(function(minp, maxp, seed)
 	if maxp.y >= 2 and minp.y <= 0 then
-		-- Generate papyrus
-		local perlin1 = minetest.get_perlin(354, 3, 0.7, 100)
-		-- Assume X and Z lengths are equal
-		local divlen = 8
-		local divs = (maxp.x-minp.x)/divlen+1;
-		for divx=0,divs-1 do
-		for divz=0,divs-1 do
-			local x0 = minp.x + math.floor((divx+0)*divlen)
-			local z0 = minp.z + math.floor((divz+0)*divlen)
-			local x1 = minp.x + math.floor((divx+1)*divlen)
-			local z1 = minp.z + math.floor((divz+1)*divlen)
-			-- Determine papyrus amount from perlin noise
-			local papyrus_amount = math.floor(perlin1:get2d({x=x0, y=z0}) * 45 - 20)
-			-- Find random positions for papyrus based on this random
-			local pr = PseudoRandom(seed+1)
-			for i=0,papyrus_amount do
-				local x = pr:next(x0, x1)
-				local z = pr:next(z0, z1)
-				if minetest.get_node({x=x,y=1,z=z}).name == "default:dirt_with_grass" and
-						minetest.find_node_near({x=x,y=1,z=z}, 1, "default:water_source") then
-					default.make_papyrus({x=x,y=2,z=z}, pr:next(2, 4))
+		c_air = minetest.get_content_id("air")
+		c_grass = minetest.get_content_id("default:dirt_with_grass")
+		c_sand = minetest.get_content_id("default:desert_sand")
+		
+		local n_papyrus = minetest.get_perlin(354, 3, 0.7, 100)
+		local n_cactus = minetest.get_perlin(230, 3, 0.6, 100)
+		local sidelen = maxp.x - minp.x + 1
+		
+		local vm = minetest.get_voxel_manip()
+		local emin, emax = vm:read_from_map(minp, maxp)
+		local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
+		local data = vm:get_data()
+		
+		local rand = PseudoRandom(seed+1)
+		for z = minp.z + 2, maxp.z - 2, 4 do
+		for x = minp.x + 2, maxp.x - 2, 4 do
+			local papyrus_amount = math.floor(n_papyrus:get2d({x=x, y=z}) * 9 - 3)
+			for i = 1, papyrus_amount do
+				local p_pos = {
+					x = rand:next(x - 2, x + 2), 
+					y = 1, 
+					z = rand:next(z - 2, z + 2)
+				}
+				if data[area:index(p_pos.x, p_pos.y, p_pos.z)] == c_grass and
+						minetest.find_node_near(p_pos, 1, "default:water_source") then
+					p_pos.y = 2
+					default.make_papyrus(p_pos, rand:next(2, 4))
 				end
 			end
-		end
-		end
-		-- Generate cactuses
-		local perlin1 = minetest.get_perlin(230, 3, 0.6, 100)
-		-- Assume X and Z lengths are equal
-		local divlen = 16
-		local divs = (maxp.x-minp.x)/divlen+1;
-		for divx=0,divs-1 do
-		for divz=0,divs-1 do
-			local x0 = minp.x + math.floor((divx+0)*divlen)
-			local z0 = minp.z + math.floor((divz+0)*divlen)
-			local x1 = minp.x + math.floor((divx+1)*divlen)
-			local z1 = minp.z + math.floor((divz+1)*divlen)
-			-- Determine cactus amount from perlin noise
-			local cactus_amount = math.floor(perlin1:get2d({x=x0, y=z0}) * 6 - 3)
-			-- Find random positions for cactus based on this random
-			local pr = PseudoRandom(seed+1)
-			for i=0,cactus_amount do
-				local x = pr:next(x0, x1)
-				local z = pr:next(z0, z1)
+			
+			local cactus_amount = math.floor(n_cactus:get2d({x=x, y=z}) * 4 - 2)
+			for i = 1, cactus_amount do
+				local p_pos = {
+					x = rand:next(x - 2, x + 2), 
+					y = -1, 
+					z = rand:next(z - 2, z + 2)
+				}
 				-- Find ground level (0...15)
-				local ground_y = nil
-				for y=30,0,-1 do
-					if minetest.get_node({x=x,y=y,z=z}).name ~= "air" then
-						ground_y = y
+				local found = false
+				local last = -1
+				for y = 30, 0, -1 do
+					p_pos.y = y
+					last = data[area:index(p_pos.x, p_pos.y, p_pos.z)]
+					if last ~= c_air then
+						found = true
 						break
 					end
 				end
-				-- If desert sand, make cactus
-				if ground_y and minetest.get_node({x=x,y=ground_y,z=z}).name == "default:desert_sand" then
-					default.make_cactus({x=x,y=ground_y+1,z=z}, pr:next(3, 4))
-				end
-			end
-		end
-		end
-		-- Generate grass
-		local perlin1 = minetest.get_perlin(329, 3, 0.6, 100)
-		-- Assume X and Z lengths are equal
-		local divlen = 16
-		local divs = (maxp.x-minp.x)/divlen+1;
-		for divx=0,divs-1 do
-		for divz=0,divs-1 do
-			local x0 = minp.x + math.floor((divx+0)*divlen)
-			local z0 = minp.z + math.floor((divz+0)*divlen)
-			local x1 = minp.x + math.floor((divx+1)*divlen)
-			local z1 = minp.z + math.floor((divz+1)*divlen)
-			-- Determine grass amount from perlin noise
-			local grass_amount = math.floor(perlin1:get2d({x=x0, y=z0}) ^ 3 * 9)
-			-- Find random positions for grass based on this random
-			local pr = PseudoRandom(seed+1)
-			for i=0,grass_amount do
-				local x = pr:next(x0, x1)
-				local z = pr:next(z0, z1)
-				-- Find ground level (0...15)
-				local ground_y = nil
-				for y=30,0,-1 do
-					if minetest.get_node({x=x,y=y,z=z}).name ~= "air" then
-						ground_y = y
-						break
-					end
-				end
-				
-				if ground_y then
-					local p = {x=x,y=ground_y+1,z=z}
-					local nn = minetest.get_node(p).name
-					-- Check if the node can be replaced
-					if minetest.registered_nodes[nn] and
-						minetest.registered_nodes[nn].buildable_to then
-						nn = minetest.get_node({x=x,y=ground_y,z=z}).name
-						-- If desert sand, add dry shrub
-						if nn == "default:desert_sand" then
-							minetest.set_node(p,{name="default:dry_shrub"})
-							
-						-- If dirt with grass, add grass
-						elseif nn == "default:dirt_with_grass" then
-							minetest.set_node(p,{name="default:grass_"..pr:next(1, 5)})
+				if found then
+					p_pos.y = p_pos.y + 1
+					if last == c_grass then
+						minetest.set_node(p_pos, {name="default:grass_"..rand:next(1, 5)})
+					elseif last == c_sand then
+						if rand:next(5) >= 3 then
+							default.make_cactus(p_pos, rand:next(3, 4))
+						else
+							minetest.set_node(p_pos, {name="default:dry_shrub"})
 						end
 					end
 				end
-				
 			end
 		end
 		end
+		data = nil
 	end
-
 	-- Generate nyan cats
 	generate_nyancats(seed, minp, maxp)
 end)
-
