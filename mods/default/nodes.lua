@@ -1056,38 +1056,6 @@ minetest.register_node("default:mossycobble", {
 	sounds = default.node_sound_stone_defaults(),
 })
 
-minetest.register_node("default:coalblock", {
-	description = "Coal block",
-	tiles = {"default_coal_block.png"},
-	is_ground_content = true,
-	groups = {cracky=3},
-	sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("default:steelblock", {
-	description = "Steel block",
-	tiles = {"default_steel_block.png"},
-	is_ground_content = true,
-	groups = {cracky=1,level=2},
-	sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("default:copperblock", {
-	description = "Copper block",
-	tiles = {"default_copper_block.png"},
-	is_ground_content = true,
-	groups = {cracky=1,level=2},
-	sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("default:bronzeblock", {
-	description = "Bronze block",
-	tiles = {"default_bronze_block.png"},
-	is_ground_content = true,
-	groups = {cracky=1,level=2},
-	sounds = default.node_sound_stone_defaults(),
-})
-
 minetest.register_node("default:mese", {
 	description = "Mese block",
 	tiles = {"default_mese_block.png"},
