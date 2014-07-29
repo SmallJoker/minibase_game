@@ -345,7 +345,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 		local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
 		local data = vm:get_data()
 		
-		local rand = PseudoRandom(seed+1)
+		local rand = PseudoRandom(seed % 8000)
 		for z = minp.z + 2, maxp.z - 2, 4 do
 		for x = minp.x + 2, maxp.x - 2, 4 do
 			local papyrus_amount = math.floor(n_papyrus:get2d({x=x, y=z}) * 9 - 3)
@@ -385,7 +385,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 					if last == c_grass then
 						minetest.set_node(p_pos, {name="default:grass_"..rand:next(1, 5)})
 					elseif last == c_sand then
-						if rand:next(5) >= 3 then
+						if rand:next(1, 5) >= 3 then
 							default.make_cactus(p_pos, rand:next(3, 4))
 						else
 							minetest.set_node(p_pos, {name="default:dry_shrub"})
