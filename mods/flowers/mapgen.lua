@@ -1,62 +1,59 @@
 minetest.register_on_generated(function(minp, maxp, seed)
-	if maxp.y >= 60 and minp.y <= 0 then
-		-- Generate flowers
-		local perlin1 = minetest.get_perlin(436, 3, 0.6, 100)
-		-- Assume X and Z lengths are equal
-		local divlen = 16
-		local divs = (maxp.x-minp.x)/divlen+1;
-		for divx=0,divs-1 do
-		for divz=0,divs-1 do
-			local x0 = minp.x + math.floor((divx+0)*divlen)
-			local z0 = minp.z + math.floor((divz+0)*divlen)
-			local x1 = minp.x + math.floor((divx+1)*divlen)
-			local z1 = minp.z + math.floor((divz+1)*divlen)
-			-- Determine flowers amount from perlin noise
-			local grass_amount = math.floor(perlin1:get2d({x=x0, y=z0}) ^ 3 * 9)
-			-- Find random positions for flowers based on this random
-			local pr = PseudoRandom(seed+456)
-			for i=0,grass_amount do
-				local x = pr:next(x0, x1)
-				local z = pr:next(z0, z1)
-				-- Find ground level (0...15)
-				local ground_y = nil
-				for y=30,0,-1 do
-					if minetest.get_node({x=x,y=y,z=z}).name ~= "air" then
-						ground_y = y
-						break
-					end
+	if maxp.y < 2 or minp.y > 0 then
+		return
+	end
+	
+	local c_air = minetest.get_content_id("air")
+	local c_grass = minetest.get_content_id("default:dirt_with_grass")
+	
+	local n_flower = minetest.get_perlin(436, 3, 0.6, 100)
+	local sidelen = maxp.x - minp.x + 1
+	
+	local vm = minetest.get_voxel_manip()
+	local emin, emax = vm:read_from_map(minp, maxp)
+	local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
+	local data = vm:get_data()
+	
+	local rand = PseudoRandom(seed % 8000)
+	for z = minp.z + 2, maxp.z - 2, 4 do
+	for x = minp.x + 2, maxp.x - 2, 4 do
+		local flower_amount = math.floor(n_flower:get2d({x=x, y=z}) * 6 - 4)
+		for i = 1, flower_amount do
+			local p_pos = {
+				x = rand:next(x - 2, x + 2), 
+				y = -1, 
+				z = rand:next(z - 2, z + 2)
+			}
+			-- Find ground level (0...15)
+			local found = false
+			local last = -1
+			for y = 30, 0, -1 do
+				p_pos.y = y
+				last = data[area:index(p_pos.x, p_pos.y, p_pos.z)]
+				if last ~= c_air then
+					found = true
+					break
 				end
-				
-				if ground_y then
-					local p = {x=x,y=ground_y+1,z=z}
-					local nn = minetest.get_node(p).name
-					-- Check if the node can be replaced
-					if minetest.registered_nodes[nn] and
-						minetest.registered_nodes[nn].buildable_to then
-						nn = minetest.get_node({x=x,y=ground_y,z=z}).name
-						if nn == "default:dirt_with_grass" then
-							local flower_choice = pr:next(1, 6)
-							local flower
-							if flower_choice == 1 then
-								flower = "flowers:tulip"
-							elseif flower_choice == 2 then
-								flower = "flowers:rose"
-							elseif flower_choice == 3 then
-								flower = "flowers:dandelion_yellow"
-							elseif flower_choice == 4 then
-								flower = "flowers:dandelion_white"
-							elseif flower_choice == 5 then
-								flower = "flowers:geranium"
-							elseif flower_choice == 6 then
-								flower = "flowers:viola"
-							end
-							minetest.set_node(p, {name=flower})
-						end
-					end
+			end
+			
+			if found and last == c_grass then
+				p_pos.y = p_pos.y + 1
+				local flower_choice = rand:next(1, 6)
+				local flower = "viola"
+				if flower_choice == 1 then
+					flower = "tulip"
+				elseif flower_choice == 2 then
+					flower = "rose"
+				elseif flower_choice == 3 then
+					flower = "dandelion_yellow"
+				elseif flower_choice == 4 then
+					flower = "dandelion_white"
+				elseif flower_choice == 5 then
+					flower = "geranium"
 				end
-				
+				minetest.set_node(p_pos, {name="flowers:"..flower})
 			end
 		end
-		end
+	end
 	end
 end)

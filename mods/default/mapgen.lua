@@ -331,71 +331,74 @@ function generate_nyancats(seed, minp, maxp)
 end
 
 minetest.register_on_generated(function(minp, maxp, seed)
-	if maxp.y >= 2 and minp.y <= 0 then
-		c_air = minetest.get_content_id("air")
-		c_grass = minetest.get_content_id("default:dirt_with_grass")
-		c_sand = minetest.get_content_id("default:desert_sand")
-		
-		local n_papyrus = minetest.get_perlin(354, 3, 0.7, 100)
-		local n_cactus = minetest.get_perlin(230, 3, 0.6, 100)
-		local sidelen = maxp.x - minp.x + 1
-		
-		local vm = minetest.get_voxel_manip()
-		local emin, emax = vm:read_from_map(minp, maxp)
-		local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
-		local data = vm:get_data()
-		
-		local rand = PseudoRandom(seed % 8000)
-		for z = minp.z + 2, maxp.z - 2, 4 do
-		for x = minp.x + 2, maxp.x - 2, 4 do
-			local papyrus_amount = math.floor(n_papyrus:get2d({x=x, y=z}) * 9 - 3)
-			for i = 1, papyrus_amount do
-				local p_pos = {
-					x = rand:next(x - 2, x + 2), 
-					y = 1, 
-					z = rand:next(z - 2, z + 2)
-				}
-				if data[area:index(p_pos.x, p_pos.y, p_pos.z)] == c_grass and
-						minetest.find_node_near(p_pos, 1, "default:water_source") then
-					p_pos.y = 2
-					default.make_papyrus(p_pos, rand:next(2, 4))
-				end
-			end
-			
-			local cactus_amount = math.floor(n_cactus:get2d({x=x, y=z}) * 4 - 2)
-			for i = 1, cactus_amount do
-				local p_pos = {
-					x = rand:next(x - 2, x + 2), 
-					y = -1, 
-					z = rand:next(z - 2, z + 2)
-				}
-				-- Find ground level (0...15)
-				local found = false
-				local last = -1
-				for y = 30, 0, -1 do
-					p_pos.y = y
-					last = data[area:index(p_pos.x, p_pos.y, p_pos.z)]
-					if last ~= c_air then
-						found = true
-						break
-					end
-				end
-				if found then
-					p_pos.y = p_pos.y + 1
-					if last == c_grass then
-						minetest.set_node(p_pos, {name="default:grass_"..rand:next(1, 5)})
-					elseif last == c_sand then
-						if rand:next(1, 5) >= 3 then
-							default.make_cactus(p_pos, rand:next(3, 4))
-						else
-							minetest.set_node(p_pos, {name="default:dry_shrub"})
-						end
-					end
-				end
-			end
-		end
-		end
-	end
 	-- Generate nyan cats
 	generate_nyancats(seed, minp, maxp)
+	
+	if maxp.y < 2 and minp.y > 0 then
+		return
+	end
+	
+	local c_air = minetest.get_content_id("air")
+	local c_grass = minetest.get_content_id("default:dirt_with_grass")
+	local c_sand = minetest.get_content_id("default:desert_sand")
+	
+	local n_papyrus = minetest.get_perlin(354, 3, 0.7, 100)
+	local n_cactus = minetest.get_perlin(230, 3, 0.6, 100)
+	local sidelen = maxp.x - minp.x + 1
+	
+	local vm = minetest.get_voxel_manip()
+	local emin, emax = vm:read_from_map(minp, maxp)
+	local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
+	local data = vm:get_data()
+	
+	local rand = PseudoRandom(seed % 8000)
+	for z = minp.z + 2, maxp.z - 2, 4 do
+	for x = minp.x + 2, maxp.x - 2, 4 do
+		local papyrus_amount = math.floor(n_papyrus:get2d({x=x, y=z}) * 9 - 3)
+		for i = 1, papyrus_amount do
+			local p_pos = {
+				x = rand:next(x - 2, x + 2), 
+				y = 0, 
+				z = rand:next(z - 2, z + 2)
+			}
+			if data[area:index(p_pos.x, p_pos.y, p_pos.z)] == c_grass and
+					minetest.find_node_near(p_pos, 1, "default:water_source") then
+				p_pos.y = 1
+				default.make_papyrus(p_pos, rand:next(2, 4))
+			end
+		end
+		
+		local cactus_amount = math.floor(n_cactus:get2d({x=x, y=z}) * 4 - 2)
+		for i = 1, cactus_amount do
+			local p_pos = {
+				x = rand:next(x - 2, x + 2), 
+				y = -1, 
+				z = rand:next(z - 2, z + 2)
+			}
+			-- Find ground level (0...15)
+			local found = false
+			local last = -1
+			for y = 30, 0, -1 do
+				p_pos.y = y
+				last = data[area:index(p_pos.x, p_pos.y, p_pos.z)]
+				if last ~= c_air then
+					found = true
+					break
+				end
+			end
+			if found then
+				p_pos.y = p_pos.y + 1
+				if last == c_grass then
+					minetest.set_node(p_pos, {name="default:grass_"..rand:next(1, 5)})
+				elseif last == c_sand then
+					if rand:next(1, 5) >= 3 then
+						default.make_cactus(p_pos, rand:next(3, 4))
+					else
+						minetest.set_node(p_pos, {name="default:dry_shrub"})
+					end
+				end
+			end
+		end
+	end
+	end
 end)
