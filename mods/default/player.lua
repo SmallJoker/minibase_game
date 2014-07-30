@@ -38,161 +38,186 @@ Model Definition
 
 model_def = {
 	animation_speed = 30, -- Default animation speed, in FPS.
-	textures = {"character.png", }, -- Default array of textures.
-	visual_size = {x=1, y=1,}, -- Used to scale the model.
+	textures = {"character.png"}, -- Default array of textures.
+	visual_size = {x = 1, y = 1}, -- Used to scale the model.
 	animations = {
-		-- <anim_name> = { x=<start_frame>, y=<end_frame>, },
-		foo = { x= 0, y=19, },
-		bar = { x=20, y=39, },
+		-- <anim_name> = {x = <start_frame>, y = <end_frame>},
+		foo = {x = 0, y = 19},
+		bar = {x = 20, y = 39},
 		-- ...
 	},
 }
-
 ]]
 
--- Player animation blending
--- Note: This is currently broken due to a bug in Irrlicht, leave at 0
-local animation_blend = 0
 
 default.registered_player_models = { }
 
 -- Local for speed.
-local models = default.registered_player_models
+local all_models = default.registered_player_models
+local main_model = false
 
 function default.player_register_model(name, def)
-	models[name] = def
+	def = def or {}
+	def.animation_speed = def.animation_speed or 30
+	def.textures = def.textures or {"character.png"}
+	def.visual_size = def.visual_size or {x = 1, y = 1}
+	if not def.animations then
+		def.animations = {
+			stand     = {x = 0, y = 79},
+			lay       = {x = 162, y = 166},
+			walk      = {x = 168, y = 187},
+			mine      = {x = 189, y = 198},
+			walk_mine = {x = 200, y = 219},
+			sit       = {x = 81, y = 160},
+		}
+	end
+	all_models[name] = def
+	if not main_model then
+		main_model = name
+	end
 end
 
--- Default player appearance
-default.player_register_model("character.x", {
-	animation_speed = 30,
-	textures = {"character.png", },
-	animations = {
-		-- Standard animations.
-		stand     = { x=  0, y= 79, },
-		lay       = { x=162, y=166, },
-		walk      = { x=168, y=187, },
-		mine      = { x=189, y=198, },
-		walk_mine = { x=200, y=219, },
-		-- Extra animations (not currently used by the game).
-		sit       = { x= 81, y=160, },
-	},
-})
+default.player_register_model("character.b3d")
+default.player_register_model("character.x")
 
--- Player stats and animations
-local player_model = {}
-local player_textures = {}
-local player_anim = {}
-local player_sneak = {}
+local players = {}
 
 function default.player_get_animation(player)
 	local name = player:get_player_name()
 	return {
-		model = player_model[name],
-		textures = player_textures[name],
-		animation = player_anim[name],
+		model = players[name].model,
+		textures = players[name].textures,
+		animation = players[name].anim,
 	}
 end
 
--- Called when a player's appearance needs to be updated
 function default.player_set_model(player, model_name)
 	local name = player:get_player_name()
-	local model = models[model_name]
-	if model then
-		if player_model[name] == model_name then
-			return
-		end
-		player:set_properties({
-			mesh = model_name,
-			textures = player_textures[name] or model.textures,
-			visual = "mesh",
-			visual_size = model.visual_size or {x=1, y=1},
-		})
-		default.player_set_animation(player, "stand")
-	else
-		player:set_properties({
-			textures = { "player.png", "player_back.png", },
-			visual = "upright_sprite",
-		})
+	if players[name].model == model_name then
+		return
 	end
-	player_model[name] = model_name
+	
+	model_name = model_name or main_model
+	local model = all_models[model_name]
+	if not model then
+		model_name = main_model
+		model = all_models[main_model]
+	end
+	local anim = model.animations
+	players[name].model = model_name
+	players[name].textures = players[name].textures or model.textures
+	
+	player:set_properties({
+		mesh = model_name,
+		textures = players[name].textures,
+		visual = "mesh",
+		visual_size = model.visual_size,
+	})
+	player:set_local_animation(
+		anim.stand, 
+		anim.walk, 
+		anim.mine, 
+		anim.walk_mine,
+		model.animation_speed
+	)
+	default.player_set_animation(player, "stand")
 end
 
 function default.player_set_textures(player, textures)
 	local name = player:get_player_name()
-	player_textures[name] = textures
-	player:set_properties({textures = textures,})
+	if players[name].textures == textures then
+		return
+	end
+	if not textures then
+		textures = all_models[players[name].model].textures
+	end
+	players[name].textures = textures
+	player:set_properties({
+		textures = textures
+	})
 end
 
 function default.player_set_animation(player, anim_name, speed)
 	local name = player:get_player_name()
-	if player_anim[name] == anim_name then
+	local model = all_models[players[name].model]
+	speed = speed or model.animation_speed
+	
+	if (players[name].anim == anim_name and
+			players[name].speed == speed) then
 		return
 	end
-	local model = player_model[name] and models[player_model[name]]
-	if not (model and model.animations[anim_name]) then
-		return
-	end
+	
 	local anim = model.animations[anim_name]
-	player_anim[name] = anim_name
-	player:set_animation(anim, speed or model.animation_speed, animation_blend)
+	if not anim then return end
+	
+	players[name].anim = anim_name
+	players[name].speed = speed
+	player:set_animation(anim, speed, 0)
 end
 
--- Update appearance when the player joins
 minetest.register_on_joinplayer(function(player)
-	default.player_set_model(player, "character.x")
-	player:set_local_animation({x=0, y=79}, {x=168, y=187}, {x=189, y=198}, {x=200, y=219}, 30)
+	local name = player:get_player_name()
+	players[name] = {
+		model = false,
+		textures = false,
+		anim = false,
+		speed = false
+	}
+	default.player_set_model(player, nil)
 end)
 
 minetest.register_on_leaveplayer(function(player)
-	local name = player:get_player_name()
-	player_model[name] = nil
-	player_anim[name] = nil
-	player_textures[name] = nil
+	players[player:get_player_name()] = nil
 end)
 
 -- Localize for better performance.
-local player_set_animation = default.player_set_animation
+local player_set_anim = default.player_set_animation
 
 -- Check each player and apply animations
+local ttime = 0
 minetest.register_globalstep(function(dtime)
+	if dtime < 0.3 then
+		ttime = ttime + dtime
+		if ttime < 0.2 then
+			return
+		end
+		ttime = 0
+	end
 	for _, player in pairs(minetest.get_connected_players()) do
 		local name = player:get_player_name()
-		local model_name = player_model[name]
-		local model = model_name and models[model_name]
+		local model = all_models[players[name].model]
 		if model then
 			local controls = player:get_player_control()
 			local walking = false
-			local animation_speed_mod = model.animation_speed or 30
+			local anim_speed = false
+			local anim = "stand"
 
-			-- Determine if the player is walking
+			-- Walks?
 			if controls.up or controls.down or controls.left or controls.right then
 				walking = true
 			end
 
-			-- Determine if the player is sneaking, and reduce animation speed if so
-			if controls.sneak then
-				animation_speed_mod = animation_speed_mod / 2
+			-- Sneak = slower
+			if controls.sneak and walking then
+				anim_speed = model.animation_speed / 2
 			end
 
-			-- Apply animations based on what the player is doing
 			if player:get_hp() == 0 then
-				player_set_animation(player, "lay")
-			elseif walking then
-				if player_sneak[name] ~= controls.sneak then
-					player_anim[name] = nil
-					player_sneak[name] = controls.sneak
+				-- Dead
+				anim = "lay"
+			else
+				if walking then
+					anim = "walk"
 				end
 				if controls.LMB then
-					player_set_animation(player, "walk_mine", animation_speed_mod)
-				else
-					player_set_animation(player, "walk", animation_speed_mod)
+					if walking then
+						anim = "walk_mine"
+					else
+						anim = "mine"
+					end
 				end
-			elseif controls.LMB then
-				player_set_animation(player, "mine")
-			else
-				player_set_animation(player, "stand", animation_speed_mod)
 			end
+			player_set_anim(player, anim, anim_speed)
 		end
 	end
 end)
