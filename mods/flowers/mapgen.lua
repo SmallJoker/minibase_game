@@ -15,8 +15,8 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local data = vm:get_data()
 	
 	local rand = PseudoRandom(seed % 8000)
-	for z = minp.z + 2, maxp.z - 2, 4 do
-	for x = minp.x + 2, maxp.x - 2, 4 do
+	for z = minp.z + 2, maxp.z - 2, 8 do
+	for x = minp.x + 2, maxp.x - 2, 8 do
 		local flower_amount = math.floor(n_flower:get2d({x=x, y=z}) * 6 - 4)
 		for i = 1, flower_amount do
 			local p_pos = {
