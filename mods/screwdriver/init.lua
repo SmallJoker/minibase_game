@@ -117,13 +117,7 @@ local function screwdriver_handler(itemstack, user, pointed_thing)
 	--print (dump(axisdir..", "..rotation))
 	node.param2 = n
 	minetest.swap_node(pos, node)
-	local item_wear = tonumber(itemstack:get_wear())
-	item_wear = item_wear + 327
-	if item_wear > 65535 then
-		itemstack:clear()
-		return itemstack
-	end
-	itemstack:set_wear(item_wear)
+	itemstack:add_wear(327)
 	return itemstack
 end
 
@@ -146,7 +140,7 @@ minetest.register_tool("screwdriver:screwdriver", {
 
 for i = 1, 4 do
 	minetest.register_tool("screwdriver:screwdriver"..i, {
-		description = "Screwdriver in Mode "..i,
+		description = "Screwdriver in mode "..i,
 		inventory_image = "screwdriver.png^tool_mode"..i..".png",
 		wield_image = "screwdriver.png",
 		groups = {not_in_creative_inventory=1},
