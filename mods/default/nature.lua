@@ -34,7 +34,6 @@ minetest.register_abm({
 	end
 })
 
-
 minetest.register_abm({
 	nodenames = {"group:freezes", "group:cold"},
 	neighbors = {"group:hot"},

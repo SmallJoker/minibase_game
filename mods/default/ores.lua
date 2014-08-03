@@ -12,7 +12,6 @@ for name, def in pairs(ore_list) do
 	minetest.register_node("default:stone_with_"..name, {
 		description = def[1].." Ore",
 		tiles = {"default_stone.png^default_mineral_"..name..".png"},
-		is_ground_content = true,
 		groups = ndef,
 		drop = "default:"..name.."_lump",
 		sounds = default.node_sound_stone_defaults(),
