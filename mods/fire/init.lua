@@ -12,15 +12,11 @@ minetest.register_node("fire:basic_flame", {
 	}},
 	inventory_image = "fire_basic_flame.png",
 	light_source = 14,
-	groups = {dig_immediate=3,hot=3,not_in_creative_inventory=1},
+	groups = {dig_immediate=3, hot=3, not_in_creative_inventory=1},
 	drop = "",
+	pointable = false,
 	walkable = false,
-	buildable_to = true,
 	damage_per_second = 3,
-	
-	after_dig_node = function(pos, oldnode, oldmetadata, digger)
-		digger:set_hp(digger:get_hp() - 4)
-	end,
 })
 
 local playing_sounds = {}
@@ -30,7 +26,7 @@ minetest.register_abm({
 	interval = 5,
 	chance = 5,
 	action = function(pos)
-		if pos.y > 10 then
+		if pos.y > 5 then
 			return
 		end
 		if minetest.find_node_near(pos, 2, {"group:puts_out_fire", "group:freezes"}) then
@@ -38,11 +34,13 @@ minetest.register_abm({
 		end
 		minetest.add_item(pos, "default:scorched_stuff")
 		minetest.set_node(pos, {name="fire:basic_flame"})
-		local hash = minetest.hash_node_position(pos)
+		-- Play sound all 2*2*2 nodes
+		local hashpos = vector.divide(pos, 2)
+		local hash = minetest.hash_node_position(vector.round(hashpos))
 		if not playing_sounds[hash] then
 			playing_sounds[hash] = minetest.sound_play(
 				{name="fire_small", gain=1.5}, 
-				{pos = pos, max_hear_distance = 20, loop=true}
+				{pos = pos, max_hear_distance = 15, loop=true}
 			)
 		end
 	end,
@@ -50,10 +48,12 @@ minetest.register_abm({
 
 minetest.register_abm({
 	nodenames = {"fire:basic_flame"},
-	interval = 10,
+	interval = 5,
 	chance = 5,
 	action = function(pos)
-		local hash = minetest.hash_node_position(pos)
+		-- Stop sound all 2*2*2 nodes
+		local hashpos = vector.divide(pos, 2)
+		local hash = minetest.hash_node_position(vector.round(hashpos))
 		if playing_sounds[hash] then
 			minetest.sound_stop(playing_sounds[hash])
 		end
