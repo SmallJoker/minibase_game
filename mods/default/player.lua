@@ -140,9 +140,9 @@ end
 
 function default.player_set_animation(player, anim_name, speed)
 	local name = player:get_player_name()
-	local pl_model = players[name].model
+	local pl_model = players[name]
 	if not pl_model then return end
-	local model = all_models[pl_model]
+	local model = all_models[pl_model.model]
 	
 	speed = speed or model.animation_speed
 	
@@ -225,9 +225,7 @@ minetest.register_globalstep(function(dtime)
 					end
 				end
 			end
-			if not player_attached[name] then
-				player_set_anim(player, anim, anim_speed)
-			end
+			player_set_anim(player, anim, anim_speed)
 		end
 	end
 end)
