@@ -140,7 +140,10 @@ end
 
 function default.player_set_animation(player, anim_name, speed)
 	local name = player:get_player_name()
-	local model = all_models[players[name].model]
+	local pl_model = players[name].model
+	if not pl_model then return end
+	local model = all_models[pl_model]
+	
 	speed = speed or model.animation_speed
 	
 	if (players[name].anim == anim_name and
