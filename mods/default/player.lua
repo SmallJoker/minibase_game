@@ -50,7 +50,8 @@ model_def = {
 ]]
 
 
-default.registered_player_models = { }
+default.registered_player_models = {}
+default.player_attached = {}
 
 -- Local for speed.
 local all_models = default.registered_player_models
@@ -166,8 +167,12 @@ minetest.register_on_joinplayer(function(player)
 	default.player_set_model(player, nil)
 end)
 
+local player_attached = default.player_attached
+
 minetest.register_on_leaveplayer(function(player)
-	players[player:get_player_name()] = nil
+	local name = player:get_player_name()
+	players[name] = nil
+	player_attached[name] = nil
 end)
 
 -- Localize for better performance.
@@ -186,7 +191,7 @@ minetest.register_globalstep(function(dtime)
 	for _, player in pairs(minetest.get_connected_players()) do
 		local name = player:get_player_name()
 		local model = all_models[players[name].model]
-		if model then
+		if model and not player_attached[name] then
 			local controls = player:get_player_control()
 			local walking = false
 			local anim_speed = false
@@ -217,7 +222,9 @@ minetest.register_globalstep(function(dtime)
 					end
 				end
 			end
-			player_set_anim(player, anim, anim_speed)
+			if not player_attached[name] then
+				player_set_anim(player, anim, anim_speed)
+			end
 		end
 	end
 end)
