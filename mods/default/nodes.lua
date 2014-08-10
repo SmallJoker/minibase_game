@@ -212,8 +212,6 @@ minetest.register_node("default:leaves", {
 	paramtype = "light",
 	waving = 1,
 	is_ground_content = false,
-	trunk = "default:tree",
-	trunk_range = 3,
 	groups = {snappy=3, leafdecay=3, flammable=2, leaves=1},
 	drop = {
 		max_items = 1,

@@ -364,10 +364,10 @@ minetest.register_abm({
 
 	action = function(pos, node)
 		local def = minetest.registered_nodes[node.name]
-		if not def.trunk or not def.trunk_range then
-			return
-		end
-		if minetest.find_node_near(pos, def.trunk_range, {"ignore", def.trunk}) then return end
+		local trunk = def.trunk or "default:tree"
+		local range = def.trunk_range or 3
+		
+		if minetest.find_node_near(pos, range, {"ignore", trunk}) then return end
 		local drops = minetest.get_node_drops(node.name)
 		for _, dropitem in ipairs(drops) do
 			if dropitem ~= node.name then
