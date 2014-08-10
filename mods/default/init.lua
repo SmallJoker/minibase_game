@@ -27,20 +27,20 @@ dofile(minetest.get_modpath("default").."/ores.lua")
 
 default.flags = {
 --	Advanced leafdecay, for "trunk" and "trunk_range" in node defs
-	"ALD"		= true,
+	["ALD"]			= true,
 --	Nature, freezemelt. Using "freezemelt" in node defs
 --	and "can_freeze", "freezes" in groups
-	"NFM"		= true,
-	"c_coal"	= 2, -- 0 = exists minimal, 1 = exists, 2 = also as ore (generated)
-	"c_iron"	= 2,
-	"c_copper"	= 2,
-	"c_diamond"	= 2,
-	"c_mese"	= 2,
-	"c_gold"	= 1,
-	"c_bronze"	= 0,
+	["NFM"]			= true,
+	["c_coal"]		= 2, -- 0 = exists minimal, 1 = exists, 2 = also as ore (generated)
+	["c_iron"]		= 2,
+	["c_copper"]	= 2,
+	["c_diamond"]	= 2,
+	["c_mese"]		= 2,
+	["c_gold"]		= 1,
+	["c_bronze"]	= 0,
 --	Trees and naturals
-	"t_normal"	= true,
-	"t_jungle"	= true,
-	"t_papyrus"	= true,
-	"t_cactus"	= true,
+	["t_normal"]	= true,
+	["t_jungle"]	= true,
+	["t_papyrus"]	= true,
+	["t_cactus"]	= true,
 }
