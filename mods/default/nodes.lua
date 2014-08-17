@@ -1015,28 +1015,6 @@ minetest.register_node("default:mossycobble", {
 	sounds = default.node_sound_stone_defaults(),
 })
 
-minetest.register_node("default:mese", {
-	description = "Mese block",
-	tiles = {"default_mese_block.png"},
-	groups = {cracky=1,level=2},
-	sounds = default.node_sound_stone_defaults(),
-})
-minetest.register_alias("default:mese_block", "default:mese")
-
-minetest.register_node("default:goldblock", {
-	description = "Gold block",
-	tiles = {"default_gold_block.png"},
-	groups = {cracky=1},
-	sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_node("default:diamondblock", {
-	description = "Diamond block",
-	tiles = {"default_diamond_block.png"},
-	groups = {cracky=1, level=3},
-	sounds = default.node_sound_stone_defaults(),
-})
-
 minetest.register_node("default:obsidian_glass", {
 	description = "Obsidian glass",
 	drawtype = "glasslike",
