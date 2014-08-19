@@ -150,8 +150,7 @@ minetest.register_node("default:jungleleaves", {
 	waving = 1,
 	is_ground_content = false,
 	trunk = "default:jungletree",
-	trunk_range = 5,
-	groups = {snappy=3, leafdecay=3, flammable=2, leaves=1},
+	groups = {snappy=3, leafdecay=5, flammable=2, leaves=1},
 	drop = {
 		max_items = 1,
 		items = {
