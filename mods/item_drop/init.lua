@@ -15,7 +15,7 @@ minetest.register_globalstep(function(dtime)
 			
 			for _,object in ipairs(minetest.get_objects_inside_radius(pos, 1)) do
 				if not object:is_player() and
-						object:get_luaentity():get_luaentity() and
+						object:get_luaentity() and
 						object:get_luaentity().name == "__builtin:item" then
 					local itemstring = object:get_luaentity().itemstring
 					if not inv then
