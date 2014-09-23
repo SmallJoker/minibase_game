@@ -22,62 +22,6 @@ Authors of media files
 Everything not listed in here:
 Copyright (C) 2010-2012 celeron55, Perttu Ahola <celeron55@gmail.com>
 
-Cisoun's WTFPL texture pack:
-  default_chest_front.png
-  default_chest_lock.png
-  default_chest_side.png
-  default_chest_top.png
-  default_stone_brick.png
-  default_dirt.png
-  default_grass.png
-  default_grass_side.png
-  default_jungletree.png
-  default_jungletree_top.png
-  default_lava.png
-  default_leaves.png
-  default_sapling.png
-  default_sign_wall.png
-  default_stone.png
-  default_tool_mesepick.png
-  default_tool_steelpick.png
-  default_tool_steelshovel.png
-  default_tool_stonepick.png
-  default_tool_stoneshovel.png
-  default_tool_woodpick.png
-  default_tool_woodshovel.png
-  default_tree.png
-  default_tree_top.png
-  default_water.png
-
-Originating from G4JC's Almost MC Texture Pack:
-  default_wood.png
-  default_torch.png
-  default_torch_on_ceiling.png
-  default_torch_on_floor.png
-  default_cobble.png
-
-VanessaE's animated torches (WTFPL):
-  default_torch_animated.png
-  default_torch_on_ceiling_animated.png
-  default_torch_on_floor_animated.png
-  default_torch_on_floor.png
-
-RealBadAngel's animated water (WTFPL):
-  default_water_source_animated.png
-  default_water_flowing_animated.png
-
-VanessaE (WTFPL):
-  default_nc_back.png
-  default_nc_front.png
-  default_nc_rb.png
-  default_nc_side.png
-  default_grass_*.png
-  default_desert_sand.png
-  default_desert_stone.png
-  default_desert_stone_brick.png
-  default_sand.png
-  default_sandstone_brick.png
-
 Calinou (CC BY-SA):
   default_brick.png
   default_clay_brick.png
@@ -88,19 +32,65 @@ Calinou (CC BY-SA):
   default_copper_lump.png
   default_mineral_copper.png
 
-MirceaKitsune (WTFPL):
-  character.x
+Casimir (CC BY-SA 3.0)
+  default_glass.png
+  default_grass.png
+  default_grass_side.png
+  default_sandstone.png
+  default_jungleleaves.png
+  default_leaves.png
+  default_grass_footsteps.png
+
+Cisoun's WTFPL texture pack:
+  default_chest_front.png
+  default_chest_lock.png
+  default_chest_side.png
+  default_chest_top.png
+  default_stone_brick.png
+  default_dirt.png
+  default_sand.png
+  default_wood.png
+  default_grass.png
+  default_grass_side.png
+  default_lava.png
+  default_sapling.png
+  default_sign_wall.png
+  default_stone.png
+  default_tool_mesepick.png
+  default_tool_steelpick.png
+  default_tool_steelshovel.png
+  default_tool_stonepick.png
+  default_tool_stoneshovel.png
+  default_tool_woodpick.png
+  default_tool_woodshovel.png
+  default_water.png
+  default_furnace_fire*
+
+Gambit (WTFPL)
+  default_tree.png
+  default_tree_top.png
+  default_snowball.png
+
+InfinityProject (WTFPL):
+  default_mineral_diamond.png
+
+jojoa1997 (WTFPL):
+  default_obsidian.png
 
 Jordach (CC BY-SA 3.0):
   character.png
 
+kaeza (WTFPL):
+  bubble.png
+
+MirceaKitsune (WTFPL):
+  character.x
+
 PilzAdam (WTFPL):
-  default_jungleleaves.png
   default_junglesapling.png
   default_junglewood.png
   default_obsidian_glass.png
   default_obsidian_shard.png
-  default_mossycobble.png
   default_gold_ingot.png
   default_gold_lump.png
   default_mineral_gold.png
@@ -116,29 +106,51 @@ PilzAdam (WTFPL):
   default_tool_bronzepick.png
   default_tool_bronzeshovel.png
   default_tool_bronzesword.png
-  default_snowball.png
+  default_ice.png
 
-jojoa1997 (WTFPL):
-  default_obsidian.png
-
-InfinityProject (WTFPL):
-  default_mineral_diamond.png
+RealBadAngel's animated water (WTFPL):
+  default_water_source_animated.png
+  default_water_flowing_animated.png
 
 Splizard (CC BY-SA 3.0):
   default_snow.png
   default_snow_side.png
-  default_ice.png
+
+Originating from G4JC's Almost MC Texture Pack:
+  default_torch.png
+  default_torch_on_ceiling.png
+  default_torch_on_floor.png
+
+VanessaE's animated torches (WTFPL):
+  default_torch_animated.png
+  default_torch_on_ceiling_animated.png
+  default_torch_on_floor_animated.png
+  default_torch_on_floor.png
+
+VanessaE (WTFPL):
+  default_nc_back.png
+  default_nc_front.png
+  default_nc_rb.png
+  default_nc_side.png
+  default_grass_*.png
+  default_desert_sand.png
+  default_desert_stone.png
+  default_desert_stone_brick.png
+  default_sandstone_brick.png
+
+WisdomFire (CC BY-SA 3.0)
+  default_jungletree.png
+  default_jungletree_top.png
 
 Zeg9 (CC BY-SA 3.0):
+  default_cobble.png
+  default_mossycobble.png
   default_coal_block.png
   default_steel_block.png
   default_copper_block.png
   default_bronze_block.png
   default_gold_block.png
   default_diamond_block.png
-
-kaeza (WTFPL):
-  bubble.png
 
 Glass breaking sounds (CC BY 3.0):
   1: http://www.freesound.org/people/cmusounddesign/sounds/71947/

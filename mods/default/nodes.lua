@@ -32,9 +32,9 @@ minetest.register_node("default:desert_stonebrick", {
 
 minetest.register_node("default:dirt_with_grass", {
 	description = "Dirt with grass",
-	tiles = {"default_grass.png", "default_dirt.png", "default_grass.png"},
+	tiles = {"default_grass.png", "default_dirt.png", "default_dirt.png^default_grass_side.png"},
 	freezemelt = "default:dirt_with_snow",
-	groups = {crumbly=3,soil=1,can_freeze=1},
+	groups = {crumbly=3, soil=1, can_freeze=1},
 	drop = "default:dirt",
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name="default_grass_footstep", gain=0.25},
@@ -44,7 +44,7 @@ minetest.register_node("default:dirt_with_grass", {
 minetest.register_node("default:dirt_with_snow", {
 	description = "Dirt with snow",
 	tiles = {"default_snow.png", "default_dirt.png", "default_dirt.png^default_snow_side.png"},
-	groups = {crumbly=3,soil=1,cold=1},
+	groups = {crumbly=3, soil=1, cold=1},
 	drop = "default:dirt",
 	freezemelt = "default:dirt",
 	sounds = default.node_sound_dirt_defaults({
@@ -55,7 +55,7 @@ minetest.register_node("default:dirt_with_snow", {
 minetest.register_node("default:dirt", {
 	description = "Dirt",
 	tiles = {"default_dirt.png"},
-	groups = {crumbly=3,soil=1},
+	groups = {crumbly=3, soil=1},
 	freezemelt = "default:dirt_with_snow",
 	sounds = default.node_sound_dirt_defaults(),
 })
