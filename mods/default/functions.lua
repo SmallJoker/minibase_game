@@ -223,12 +223,14 @@ minetest.register_abm({
 --
 
 -- from game "Carbone", lavacooling by vmanip.
-local function cool_wf_vm(pos, node1, node2)
+
+local lava_time, lava_count = 0, 0
+local function cool_lava_vm(pos, node1, node2)
 	local minp = vector.subtract(pos, 6)
 	local maxp = vector.add(pos, 6)
 	local manip = minetest.get_voxel_manip()
-	local epos1, epos2 = manip:read_from_map(minp, maxp)
-	local area = VoxelArea:new({MinEdge=epos1, MaxEdge=epos2})
+	local emin, emax = manip:read_from_map(minp, maxp)
+	local area = VoxelArea:new({MinEdge=emin, MaxEdge=emax})
 	local nodes = manip:get_data()
 
 	local stone = minetest.get_content_id(node2)
@@ -253,27 +255,43 @@ local function cool_wf_vm(pos, node1, node2)
 	manip:update_map()
 end
 
-local lava_del1 = 0
-local lava_count = 0
+default.cool_lava_source = function(pos)
+	local dtime = os.clock()
+	if dtime - lava_time < 0.4 and lava_count > 2 then
+		cool_lava_vm(pos, "default:lava_source", "default:obsidian")
+		lava_count = 0
+	else
+		minetest.set_node(pos, {name="default:obsidian"})
+		if dtime - lava_time < 0.4 then
+			lava_count = lava_count + 1
+		end
+	end
+	minetest.sound_play("default_cool_lava", {pos = pos, gain = 0.2})
+	lava_time = dtime
+end
+
+default.cool_lava_flowing = function(pos)
+	local dtime = os.clock()
+	if dtime - lava_time < 0.4 and lava_count > 2 then
+		cool_lava_vm(pos, "default:lava_flowing", "default:stone")
+		lava_count = 0
+	else
+		minetest.set_node(pos, {name="default:stone"})
+		if dtime - lava_time < 0.4 then
+			lava_count = lava_count + 1
+		end
+	end
+	minetest.sound_play("default_cool_lava", {pos = pos, gain = 0.2})
+	lava_time = dtime
+end
 
 minetest.register_abm({
 	nodenames = {"default:lava_flowing"},
 	neighbors = {"group:water"},
 	interval = 1,
 	chance = 2,
-	action = function(pos, node)
-		local lava_del2 = os.clock() - lava_del1
-		if lava_del2 < 0.4 and lava_count > 2 then
-			cool_wf_vm(pos, "default:lava_flowing", "default:stone")
-			lava_count = 0
-		else
-			minetest.set_node(pos, {name="default:stone"})
-			minetest.sound_play("default_cool_lava", {pos = pos, gain = 0.2})
-			if lava_del2 < 0.4 then
-				lava_count = lava_count + 1
-			end
-		end
-		lava_del1 = os.clock()
+	action = function(pos)
+		default.cool_lava_flowing(pos, node, active_object_count, active_object_count_wider)
 	end,
 })
 
@@ -282,19 +300,8 @@ minetest.register_abm({
 	neighbors = {"group:water"},
 	interval = 1,
 	chance = 2,
-	action = function(pos, node)
-		local lava_del2 = os.clock() - lava_del1
-		if lava_del2 < 0.4 and lava_count > 2 then
-			cool_wf_vm(pos, "default:lava_source", "default:obsidian")
-			lava_count = 0
-		else
-			minetest.set_node(pos, {name="default:obsidian"})
-			minetest.sound_play("default_cool_lava", {pos = pos, gain = 0.2})
-			if lava_del2 < 0.4 then
-				lava_count = lava_count + 1
-			end
-		end
-		lava_del1 = os.clock()
+	action = function(pos)
+		default.cool_lava_source(pos, node, active_object_count, active_object_count_wider)
 	end,
 })
 

@@ -79,7 +79,6 @@ function default.player_register_model(name, def)
 end
 
 default.player_register_model("character.b3d")
-default.player_register_model("character.x")
 
 local players = {}
 
