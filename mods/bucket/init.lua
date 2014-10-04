@@ -38,6 +38,7 @@ function bucket.register_liquid(source, flowing, itemname, inventory_image, name
 		inventory_image = inventory_image,
 		stack_max = 1,
 		liquids_pointable = true,
+		groups = {not_in_creative_inventory = 1},
 		on_place = function(itemstack, user, pointed_thing)
 			if pointed_thing.type ~= "node" then
 				return
