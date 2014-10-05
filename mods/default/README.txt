@@ -88,6 +88,8 @@ Krock (WTFPL):
 	default_glass_detail.png
 	default_obsidian_glass.png
 	default_obsidian_glass_detail.png
+	player.png
+	player_back.png
 
 PilzAdam (WTFPL):
 	default_junglesapling.png

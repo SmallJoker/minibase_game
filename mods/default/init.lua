@@ -12,21 +12,24 @@ LIGHT_MAX = 14
 default = {}
 
 -- Load files
-dofile(minetest.get_modpath("default").."/functions.lua")
-dofile(minetest.get_modpath("default").."/nodes.lua")
-dofile(minetest.get_modpath("default").."/tools.lua")
-dofile(minetest.get_modpath("default").."/craftitems.lua")
-dofile(minetest.get_modpath("default").."/crafting.lua")
-dofile(minetest.get_modpath("default").."/mapgen.lua")
-dofile(minetest.get_modpath("default").."/player.lua")
-dofile(minetest.get_modpath("default").."/trees.lua")
-dofile(minetest.get_modpath("default").."/nature.lua")
-dofile(minetest.get_modpath("default").."/ores.lua")
+local modpath = minetest.get_modpath("default")
+dofile(modpath.."/functions.lua")
+dofile(modpath.."/nodes.lua")
+dofile(modpath.."/tools.lua")
+dofile(modpath.."/craftitems.lua")
+dofile(modpath.."/crafting.lua")
+dofile(modpath.."/mapgen.lua")
+if not minetest.setting_getbool("disable_player_model") then
+	dofile(modpath.."/player.lua")
+end
+dofile(modpath.."/trees.lua")
+dofile(modpath.."/nature.lua")
+dofile(modpath.."/ores.lua")
 
 -- Flags to detect functions/features of the current game
 
 default.flags = {
---	Advanced leafdecay, for "trunk" and "trunk_range" in node defs
+--	Advanced leafdecay, for "trunk" in node defs
 	["ALD"]			= true,
 --	Nature, freezemelt. Using "freezemelt" in node defs
 --	and "can_freeze", "freezes" in groups
