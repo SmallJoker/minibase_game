@@ -71,7 +71,17 @@ function bucket.register_liquid(source, flowing, itemname, inventory_image, name
 			if not place_at then
 				return
 			end
-			if check_protection(place_at, user:get_player_name()) then
+			
+			local player_name = user:get_player_name()
+			if source == "default:lava_source" and 
+					not minetest.is_singleplayer() then
+				if pointed_thing.above.y > -5 then
+					minetest.chat_send_player(player_name, "Do not place lava over -5m, that could end really bad!", true)
+					return itemstack
+				end
+			end
+			
+			if check_protection(place_at, player_name) then
 				return
 			end
 			
