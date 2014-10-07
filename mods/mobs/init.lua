@@ -113,14 +113,14 @@ minetest.register_craftitem("mobs:meat_raw", {
 minetest.register_craftitem("mobs:meat", {
 	description = "Meat",
 	inventory_image = "mobs_meat.png",
-	on_use = minetest.item_eat(6),
+	on_use = minetest.item_eat(4),
 })
 
 minetest.register_craft({
 	type = "cooking",
 	output = "mobs:meat",
 	recipe = "mobs:meat_raw",
-	cooktime = 25,
+	cooktime = 20,
 })
 
 -- mobs:register_spawn(name, description, nodes, 

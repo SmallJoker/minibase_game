@@ -428,7 +428,7 @@ function mobs:register_spawn(name, description, nodes, max_light, min_light, cha
 	minetest.register_abm({
 		nodenames = nodes,
 		neighbors = {"air"},
-		interval = 10,
+		interval = 20,
 		chance = chance,
 		action = function(pos, node, _, active_object_count_wider)
 			if active_object_count_wider > active_object_count then return end
