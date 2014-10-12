@@ -366,8 +366,8 @@ minetest.register_abm({
 
 minetest.register_abm({
 	nodenames = {"group:leafdecay"},
-	interval = 8,
-	chance = 8,
+	interval = 5,
+	chance = 5,
 
 	action = function(pos, node)
 		local def = minetest.registered_nodes[node.name]
