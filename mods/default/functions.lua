@@ -152,25 +152,6 @@ function default.copy_table(otable)
 end
 
 --
--- Legacy
---
-
-function default.spawn_falling_node(p, nodename)
-	spawn_falling_node(p, nodename)
-end
-
--- Horrible crap to support old code
--- Don't use this and never do what this does, it's completely wrong!
--- (More specifically, the client and the C++ code doesn't get the group)
-function default.register_falling_node(nodename, texture)
-	minetest.log("error", debug.traceback())
-	minetest.log('error', "WARNING: default.register_falling_node is deprecated")
-	if minetest.registered_nodes[nodename] then
-		minetest.registered_nodes[nodename].groups.falling_node = 1
-	end
-end
-
---
 -- Grow trees
 --
 
@@ -224,7 +205,6 @@ minetest.register_abm({
 
 -- from game "Carbone", lavacooling by vmanip.
 
-local lava_time, lava_count = 0, 0
 local function cool_lava_vm(pos, node1, node2)
 	local minp = vector.subtract(pos, 6)
 	local maxp = vector.add(pos, 6)
@@ -237,31 +217,33 @@ local function cool_lava_vm(pos, node1, node2)
 	local lava = minetest.get_content_id(node1)
 
 	for x = minp.x, maxp.x do
-		for y = minp.y, maxp.y do
-			for z = minp.z, maxp.z do
-				local p = {x=x, y=y, z=z}
-				local p_p = area:indexp(p)
-				if nodes[p_p] == lava 
-					and minetest.find_node_near(p, 1, {"group:water"}) then
-					nodes[p_p] = stone
-				end
-			end
+	for y = minp.y, maxp.y do
+	for z = minp.z, maxp.z do
+		local p = {x=x, y=y, z=z}
+		local vi = area:indexp(p)
+		if nodes[vi] == lava 
+			and minetest.find_node_near(p, 1, {"group:water"}) then
+			nodes[vi] = stone
 		end
+	end
+	end
 	end
 				
 	manip:set_data(nodes)
 	manip:write_to_map()
-	minetest.log("action", "Lava cooling at ".. minetest.pos_to_string(pos))
+	minetest.log("action", "Lava cooling at "..minetest.pos_to_string(pos))
 	manip:update_map()
+	manip:update_liquids()
 end
 
-default.cool_lava_source = function(pos)
+local lava_time, lava_count = 0, 0
+local function lava_cooling(src, dst)
 	local dtime = os.clock()
 	if dtime - lava_time < 0.4 and lava_count > 2 then
-		cool_lava_vm(pos, "default:lava_source", "default:obsidian")
+		cool_lava_vm(pos, src, dst)
 		lava_count = 0
 	else
-		minetest.set_node(pos, {name="default:obsidian"})
+		minetest.set_node(pos, {name=dst})
 		if dtime - lava_time < 0.4 then
 			lava_count = lava_count + 1
 		end
@@ -270,19 +252,12 @@ default.cool_lava_source = function(pos)
 	lava_time = dtime
 end
 
-default.cool_lava_flowing = function(pos)
-	local dtime = os.clock()
-	if dtime - lava_time < 0.4 and lava_count > 2 then
-		cool_lava_vm(pos, "default:lava_flowing", "default:stone")
-		lava_count = 0
-	else
-		minetest.set_node(pos, {name="default:stone"})
-		if dtime - lava_time < 0.4 then
-			lava_count = lava_count + 1
-		end
-	end
-	minetest.sound_play("default_cool_lava", {pos = pos, gain = 0.2})
-	lava_time = dtime
+function default.cool_lava_source(pos)
+	lava_cooling("default:lava_source", "default:obsidian")
+end
+
+function default.cool_lava_flowing(pos)
+	lava_cooling(pos, "default:lava_flowing", "default:stone")
 end
 
 minetest.register_abm({
