@@ -200,11 +200,11 @@ function mobs:register_mob(name, def)
 				do_env_damage(self)
 			end
 			
-			local p, s, vec, dist = false, false, false, false
+			local s = self.object:getpos()
+			local p, vec, dist = false, false, false
 			if self.type == "monster" and not self.attack then
 				for _,player in ipairs(minetest.get_connected_players()) do
 					if not dist then
-						s = self.object:getpos()
 						p = player:getpos()
 						vec = vector.subtract(p, s)
 						dist = (vec.x ^ 2 + vec.y ^ 2 + vec.z ^ 2) ^ 0.5
@@ -222,7 +222,6 @@ function mobs:register_mob(name, def)
 			if self.follow ~= "" and not self.following then
 				for _,player in ipairs(minetest.get_connected_players()) do
 					if not dist then
-						s = self.object:getpos()
 						p = player:getpos()
 						vec = vector.subtract(p, s)
 						dist = (vec.x ^ 2 + vec.y ^ 2 + vec.z ^ 2) ^ 0.5
@@ -241,7 +240,6 @@ function mobs:register_mob(name, def)
 					self.following = nil
 				else
 					if not dist then
-						s = self.object:getpos()
 						p = self.following:getpos()
 						vec = vector.subtract(p, s)
 						dist = (vec.x ^ 2 + vec.y ^ 2 + vec.z ^ 2) ^ 0.5
@@ -315,7 +313,6 @@ function mobs:register_mob(name, def)
 					return
 				end
 				if not dist then
-					s = self.object:getpos()
 					p = self.attack:getpos()
 					vec = vector.subtract(p, s)
 					dist = (vec.x ^ 2 + vec.y ^ 2 + vec.z ^ 2) ^ 0.5
