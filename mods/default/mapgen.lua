@@ -295,13 +295,12 @@ function default.make_nyancat(pos, facedir, length)
 	elseif facedir == 3 then
 		tailvec.x = -1
 	else
-		--print("default.make_nyancat(): Invalid facedir: "+dump(facedir))
 		facedir = 0
 		tailvec.z = 1
 	end
 	local p = {x=pos.x, y=pos.y, z=pos.z}
 	minetest.set_node(p, {name="default:nyancat", param2=facedir})
-	for i=1,length do
+	for i=1, length do
 		p.x = p.x + tailvec.x
 		p.z = p.z + tailvec.z
 		minetest.set_node(p, {name="default:nyancat_rainbow", param2=facedir})
@@ -314,20 +313,16 @@ function generate_nyancats(seed, minp, maxp)
 	if maxp.y < height_min or minp.y > height_max then
 		return
 	end
-	local y_min = math.max(minp.y, height_min)
-	local y_max = math.min(maxp.y, height_max)
-	local volume = (maxp.x-minp.x+1)*(y_max-y_min+1)*(maxp.z-minp.z+1)
 	local pr = PseudoRandom(seed + 9324342)
-	local max_num_nyancats = math.floor(volume / (16*16*16))
-	for i=1,max_num_nyancats do
-		if pr:next(0, 1000) == 0 then
-			local x0 = pr:next(minp.x, maxp.x)
-			local y0 = pr:next(minp.y, maxp.y)
-			local z0 = pr:next(minp.z, maxp.z)
-			local p0 = {x=x0, y=y0, z=z0}
-			default.make_nyancat(p0, pr:next(0,3), pr:next(3,15))
-		end
+	if pr:next(0, 1200) ~= 0 then
+		return
 	end
+	
+	local x0 = pr:next(minp.x, maxp.x)
+	local y0 = pr:next(minp.y, maxp.y)
+	local z0 = pr:next(minp.z, maxp.z)
+	local p0 = {x=x0, y=y0, z=z0}
+	default.make_nyancat(p0, pr:next(0,3), pr:next(3,15))
 end
 
 minetest.register_on_generated(function(minp, maxp, seed)
@@ -344,7 +339,6 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	
 	local n_papyrus = minetest.get_perlin(354, 3, 0.7, 100)
 	local n_cactus = minetest.get_perlin(230, 3, 0.6, 100)
-	local sidelen = maxp.x - minp.x + 1
 	
 	local vm = minetest.get_voxel_manip()
 	local emin, emax = vm:read_from_map(minp, maxp)
@@ -354,7 +348,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local rand = PseudoRandom(seed % 8000)
 	for z = minp.z + 2, maxp.z - 2, 4 do
 	for x = minp.x + 2, maxp.x - 2, 4 do
-		local papyrus_amount = math.floor(n_papyrus:get2d({x=x, y=z}) * 9 - 3)
+		local papyrus_amount = math.floor(n_papyrus:get2d({x=x, y=z}) * 6 - 2)
 		for i = 1, papyrus_amount do
 			local p_pos = {
 				x = rand:next(x - 2, x + 2), 
@@ -368,7 +362,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 			end
 		end
 		
-		local cactus_amount = math.floor(n_cactus:get2d({x=x, y=z}) * 4 - 2)
+		local cactus_amount = math.floor(n_cactus:get2d({x=x, y=z}) * 3)
 		for i = 1, cactus_amount do
 			local p_pos = {
 				x = rand:next(x - 2, x + 2), 
@@ -391,7 +385,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 				if last == c_grass then
 					minetest.set_node(p_pos, {name="default:grass_"..rand:next(1, 5)})
 				elseif last == c_sand then
-					if rand:next(1, 5) >= 3 then
+					if rand:next(1, 5) >= 4 then
 						default.make_cactus(p_pos, rand:next(3, 4))
 					else
 						minetest.set_node(p_pos, {name="default:dry_shrub"})
