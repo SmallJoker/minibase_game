@@ -237,7 +237,7 @@ local function cool_lava_vm(pos, node1, node2)
 end
 
 local lava_time, lava_count = 0, 0
-local function lava_cooling(src, dst)
+local function lava_cooling(pos, src, dst)
 	local dtime = os.clock()
 	if dtime - lava_time < 0.4 and lava_count > 2 then
 		cool_lava_vm(pos, src, dst)
@@ -253,7 +253,7 @@ local function lava_cooling(src, dst)
 end
 
 function default.cool_lava_source(pos)
-	lava_cooling("default:lava_source", "default:obsidian")
+	lava_cooling(pos, "default:lava_source", "default:obsidian")
 end
 
 function default.cool_lava_flowing(pos)
