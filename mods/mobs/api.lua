@@ -241,6 +241,10 @@ function mobs:register_mob(name, def)
 				else
 					if not dist then
 						p = self.following:getpos()
+						if not p then
+							self.following = nil
+							return
+						end
 						vec = vector.subtract(p, s)
 						dist = (vec.x ^ 2 + vec.y ^ 2 + vec.z ^ 2) ^ 0.5
 					end
@@ -314,6 +318,10 @@ function mobs:register_mob(name, def)
 				end
 				if not dist then
 					p = self.attack:getpos()
+					if not p then
+						self.attack = nil
+						return
+					end
 					vec = vector.subtract(p, s)
 					dist = (vec.x ^ 2 + vec.y ^ 2 + vec.z ^ 2) ^ 0.5
 				end
