@@ -83,6 +83,9 @@ Jordach (CC BY-SA 3.0):
 kaeza (WTFPL):
 	bubble.png
 
+kilbith (WTFPL):
+	default_grass_*.png
+
 Krock (WTFPL):
 	default_glass.png
 	default_glass_detail.png
@@ -137,7 +140,6 @@ VanessaE (WTFPL):
 	default_nc_front.png
 	default_nc_rb.png
 	default_nc_side.png
-	default_grass_*.png
 	default_desert_sand.png
 	default_desert_stone.png
 	default_desert_stone_brick.png
