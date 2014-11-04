@@ -600,17 +600,21 @@ minetest.register_node("default:sign_wall", {
 })
 
 default.chest_formspec = 
-	"size[8,9]"..
-	"list[current_name;main;0,0;8,4;]"..
-	"list[current_player;main;0,5;8,4;]"
+		"size[8,9]"..
+		default.gui_bg..
+		default.gui_bg_img..
+		default.gui_slots..
+		"list[current_name;main;0,0;8,4;]"..
+		"list[current_player;main;0,5;8,4;]"
 
 function default.get_locked_chest_formspec(pos)
-	local spos = pos.x .. "," .. pos.y .. "," ..pos.z
-	local formspec =
-		"size[8,9]"..
-		"list[nodemeta:".. spos .. ";main;0,0;8,4;]"..
-		"list[current_player;main;0,5;8,4;]"
-	return formspec
+	local spos = pos.x ..",".. pos.y ..",".. pos.z
+	return "size[8,9]"..
+			default.gui_bg..
+			default.gui_bg_img..
+			default.gui_slots..
+			"list[nodemeta:".. spos ..";main;0,0;8,4;]"..
+			"list[current_player;main;0,5;8,4;]"
 end
 
 
@@ -705,25 +709,25 @@ minetest.register_node("default:chest_locked", {
 	end,
 })
 
-function default.get_furnace_active_formspec(pos, percent)
-	local formspec =
+default.furnace_basic_formspec =
 		"size[8,9]"..
-		"image[2,2;1,1;default_furnace_fire_bg.png^[lowpart:"..
-		(100-percent)..":default_furnace_fire_fg.png]"..
+		default.gui_bg..
+		default.gui_bg_img..
+		default.gui_slots..
 		"list[current_name;fuel;2,3;1,1;]"..
 		"list[current_name;src;2,1;1,1;]"..
 		"list[current_name;dst;5,1;2,2;]"..
 		"list[current_player;main;0,5;8,4;]"
-	return formspec
+
+function default.get_furnace_active_formspec(pos, percent)
+	return default.furnace_basic_formspec..
+			"image[2,2;1,1;default_furnace_fire_bg.png^[lowpart:"..
+			(100-percent)..":default_furnace_fire_fg.png]"
 end
 
 default.furnace_inactive_formspec =
-	"size[8,9]"..
-	"image[2,2;1,1;default_furnace_fire_bg.png]"..
-	"list[current_name;fuel;2,3;1,1;]"..
-	"list[current_name;src;2,1;1,1;]"..
-	"list[current_name;dst;5,1;2,2;]"..
-	"list[current_player;main;0,5;8,4;]"
+		default.furnace_basic_formspec..
+		"image[2,2;1,1;default_furnace_fire_bg.png]"
 
 minetest.register_node("default:furnace", {
 	description = "Furnace",
@@ -759,14 +763,13 @@ minetest.register_node("default:furnace", {
 		local meta = minetest.get_meta(pos)
 		local inv = meta:get_inventory()
 		if listname == "fuel" then
-			if minetest.get_craft_result({method="fuel",width=1,items={stack}}).time ~= 0 then
+			if minetest.get_craft_result({method="fuel", width=1, items={stack}}).time ~= 0 then
 				if inv:is_empty("src") then
-					meta:set_string("infotext","Furnace is empty")
+					meta:set_string("infotext", "Furnace is empty")
 				end
 				return stack:get_count()
-			else
-				return 0
 			end
+			return 0
 		elseif listname == "src" then
 			return stack:get_count()
 		elseif listname == "dst" then
@@ -781,9 +784,9 @@ minetest.register_node("default:furnace", {
 		local inv = meta:get_inventory()
 		local stack = inv:get_stack(from_list, from_index)
 		if to_list == "fuel" then
-			if minetest.get_craft_result({method="fuel",width=1,items={stack}}).time ~= 0 then
+			if minetest.get_craft_result({method="fuel", width=1, items={stack}}).time ~= 0 then
 				if inv:is_empty("src") then
-					meta:set_string("infotext","Furnace is empty")
+					meta:set_string("infotext", "Furnace is empty")
 				end
 				return count
 			else
@@ -854,9 +857,9 @@ minetest.register_node("default:furnace_active", {
 		local meta = minetest.get_meta(pos)
 		local inv = meta:get_inventory()
 		if listname == "fuel" then
-			if minetest.get_craft_result({method="fuel",width=1,items={stack}}).time ~= 0 then
+			if minetest.get_craft_result({method="fuel", width=1, items={stack}}).time ~= 0 then
 				if inv:is_empty("src") then
-					meta:set_string("infotext","Furnace is empty")
+					meta:set_string("infotext", "Furnace is empty")
 				end
 				return stack:get_count()
 			else
@@ -876,9 +879,9 @@ minetest.register_node("default:furnace_active", {
 		local inv = meta:get_inventory()
 		local stack = inv:get_stack(from_list, from_index)
 		if to_list == "fuel" then
-			if minetest.get_craft_result({method="fuel",width=1,items={stack}}).time ~= 0 then
+			if minetest.get_craft_result({method="fuel", width=1, items={stack}}).time ~= 0 then
 				if inv:is_empty("src") then
-					meta:set_string("infotext","Furnace is empty")
+					meta:set_string("infotext", "Furnace is empty")
 				end
 				return count
 			else
@@ -908,7 +911,7 @@ local function swap_node(pos,name)
 end
 
 minetest.register_abm({
-	nodenames = {"default:furnace","default:furnace_active"},
+	nodenames = {"default:furnace", "default:furnace_active"},
 	interval = 2,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
@@ -941,14 +944,9 @@ minetest.register_abm({
 			meta:set_float("fuel_time", meta:get_float("fuel_time") + 2)
 			meta:set_float("src_time", meta:get_float("src_time") + 2)
 			if cooked and cooked.item and meta:get_float("src_time") >= cooked.time then
-				-- check if there's room for output in "dst" list
-				if inv:room_for_item("dst",cooked.item) then
-					-- Put result in "dst" list
+				if inv:room_for_item("dst", cooked.item) then
 					inv:add_item("dst", cooked.item)
-					-- take stuff from "src" list
 					inv:set_stack("src", 1, aftercooked.items[1])
-				else
-					--print("Could not insert '"..cooked.item:to_string().."'")
 				end
 				meta:set_string("src_time", 0)
 			end
@@ -957,9 +955,9 @@ minetest.register_abm({
 		if meta:get_float("fuel_time") < meta:get_float("fuel_totaltime") then
 			local percent = math.floor(meta:get_float("fuel_time") /
 					meta:get_float("fuel_totaltime") * 100)
-			meta:set_string("infotext","Furnace active: "..percent.."%")
+			meta:set_string("infotext", "Furnace active: "..percent.."%")
 			swap_node(pos,"default:furnace_active")
-			meta:set_string("formspec",default.get_furnace_active_formspec(pos, percent))
+			meta:set_string("formspec", default.get_furnace_active_formspec(pos, percent))
 			return
 		end
 
@@ -977,15 +975,15 @@ minetest.register_abm({
 		end
 
 		if not fuel or fuel.time <= 0 then
-			meta:set_string("infotext","Furnace out of fuel")
-			swap_node(pos,"default:furnace")
+			meta:set_string("infotext", "Furnace out of fuel")
+			swap_node(pos, "default:furnace")
 			meta:set_string("formspec", default.furnace_inactive_formspec)
 			return
 		end
 
 		if cooked.item:is_empty() then
 			if was_active then
-				meta:set_string("infotext","Furnace is empty")
+				meta:set_string("infotext", "Furnace is empty")
 				swap_node(pos,"default:furnace")
 				meta:set_string("formspec", default.furnace_inactive_formspec)
 			end
