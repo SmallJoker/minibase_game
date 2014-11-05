@@ -1,0 +1,5 @@
+This mod is copied from https://github.com/minetest-technic/technic 
+Original mod: https://github.com/metalstache/wrench
+
+Initial project creator: ashenk69 (WTFPL)
+Edited by various people.
