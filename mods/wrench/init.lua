@@ -74,7 +74,7 @@ end
 
 for name, info in pairs(wrench.registered_nodes) do
 	local olddef = minetest.registered_nodes[name]
-	if not olddef then
+	if olddef then
 		local newdef = {}
 		for key, value in pairs(olddef) do
 			newdef[key] = value
@@ -109,8 +109,10 @@ minetest.register_tool("wrench:wrench", {
 		if not placer or not pos then
 			return
 		end
-		if minetest.is_protected(pos, placer:get_player_name()) then
-			minetest.record_protection_violation(pos, placer:get_player_name())
+		
+		local player_name = placer:get_player_name()
+		if minetest.is_protected(pos, player_name) then
+			minetest.record_protection_violation(pos, player_name)
 			return
 		end
 		local name = minetest.get_node(pos).name
@@ -125,10 +127,10 @@ minetest.register_tool("wrench:wrench", {
 			return
 		end
 		local meta = minetest.get_meta(pos)
-		if def.owned then
+		if def.owned and not minetest.check_player_privs(player_name, {server=true}) then
 			local owner = meta:get_string("owner")
-			if owner and owner ~= placer:get_player_name() then
-				minetest.log("action", placer:get_player_name()..
+			if owner and owner ~= player_name then
+				minetest.log("action", player_name..
 					" tried to pick up a owned node belonging to "..
 					owner.." at "..
 					minetest.pos_to_string(pos))

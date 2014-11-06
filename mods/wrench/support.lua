@@ -30,17 +30,21 @@ wrench.registered_nodes = {
 	},
 	["default:chest_locked"] = {
 		lists = {"main"},
-		metas = {owner = STRING,
-			infotext = STRING},
+		metas = {
+			owner = STRING,
+			infotext = STRING
+		},
 		owned = true,
 	},
 	["default:furnace"] = {
 		lists = {"fuel", "src", "dst"},
-		metas = {infotext = STRING,
+		metas = {
+			infotext = STRING,
 			fuel_totaltime = FLOAT,
 			fuel_time = FLOAT,
 			src_totaltime = FLOAT,
-			src_time = FLOAT},
+			src_time = FLOAT
+		},
 	},
 	["default:furnace_active"] = {
 		lists = {"fuel", "src", "dst"},
@@ -52,8 +56,11 @@ wrench.registered_nodes = {
 		store_meta_always = true,
 	},
 	["default:sign_wall"] = {
-		metas = {infotext = STRING,
-			text = STRING},
+		metas = {
+			infotext = STRING,
+			formspec = STRING,
+			text = STRING
+		},
 	},
 }
 
