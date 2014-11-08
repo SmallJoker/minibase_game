@@ -10,6 +10,7 @@ LIGHT_MAX = 14
 
 -- Definitions made by this mod that other mods can use too
 default = {}
+default.player_attached = {}
 
 -- Compatibility code for minetest_game
 default.gui_bg = "bgcolor[#111C;]"

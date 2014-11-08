@@ -51,7 +51,6 @@ model_def = {
 
 
 default.registered_player_models = {}
-default.player_attached = {}
 
 -- Local for speed.
 local all_models = default.registered_player_models
