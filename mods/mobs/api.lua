@@ -47,7 +47,7 @@ function mobs:register_mob(name, def)
 			end
 			local x = math.sin(yaw) * -v
 			local z = math.cos(yaw) * v
-			self.object:setvelocity({x =x, y = self.object:getvelocity().y, z =z})
+			self.object:setvelocity({x = x, y = self.object:getvelocity().y, z = z})
 		end,
 		
 		get_velocity = function(self)
@@ -111,9 +111,10 @@ function mobs:register_mob(name, def)
 		
 		on_step = function(self, dtime)
 			self.lifetimer = self.lifetimer - dtime
+			local my_pos = self.object:getpos()
 			if self.lifetimer <= 0 and not self.tamed then
 				local player_count = 0
-				for _,obj in ipairs(minetest.get_objects_inside_radius(self.object:getpos(), 12)) do
+				for _,obj in ipairs(minetest.get_objects_inside_radius(my_pos, 12)) do
 					if obj:is_player() then
 						player_count = player_count + 1
 					end
@@ -124,18 +125,14 @@ function mobs:register_mob(name, def)
 				end
 			end
 			
+			local accel = {x = 0, y = 0, z = 0}
 			if self.object:getvelocity().y > 0.1 then
 				local yaw = self.object:getyaw()
 				if self.drawtype == "side" then
 					yaw = yaw+(math.pi/2)
 				end
-				local x = math.sin(yaw) * -2
-				local z = math.cos(yaw) * 2
-				if minetest.get_item_group(minetest.get_node(self.object:getpos()).name, "water") ~= 0 then
-					self.object:setacceleration({x = x, y = 1.5, z = z})
-				else
-					self.object:setacceleration({x = x, y = -10, z = z})
-				end
+				accel.x = math.sin(yaw) * -2
+				accel.z = math.cos(yaw) * 2
 			else
 				if minetest.get_item_group(minetest.get_node(self.object:getpos()).name, "water") ~= 0 then
 					self.object:setacceleration({x = 0, y = 1.5, z = 0})
@@ -143,6 +140,12 @@ function mobs:register_mob(name, def)
 					self.object:setacceleration({x = 0, y = -10, z = 0})
 				end
 			end
+			if minetest.get_item_group(minetest.get_node(my_pos).name, "water") ~= 0 then
+				accel.y = 1.1
+			else
+				accel.y = -10
+			end
+			self.object:setacceleration(accel)
 			
 			self.timer = self.timer + dtime
 			if self.state ~= "attack" then
@@ -154,13 +157,11 @@ function mobs:register_mob(name, def)
 				local pos = self.object:getpos()
 				local n = minetest.get_node(pos)
 				
+				local light = minetest.get_node_light(pos) or 16
 				if self.light_damage and self.light_damage ~= 0
-					and pos.y > 0
-					and minetest.get_node_light(pos)
-					and minetest.get_node_light(pos) > 4
-					and minetest.get_timeofday() > 0.2
-					and minetest.get_timeofday() < 0.8
-				then
+						and pos.y > -10
+						and light > 7 then
+					
 					self.object:set_hp(self.object:get_hp()-self.light_damage)
 					minetest.sound_play("player_damage", {object = self.object, gain = 0.25})
 					if self.object:get_hp() <= 0 then
@@ -170,8 +171,8 @@ function mobs:register_mob(name, def)
 				end
 				
 				if self.water_damage and self.water_damage ~= 0 and
-					minetest.get_item_group(n.name, "water") ~= 0
-				then
+						minetest.get_item_group(n.name, "water") ~= 0 then
+					
 					self.object:set_hp(self.object:get_hp()-self.water_damage)
 					minetest.sound_play("player_damage", {object = self.object, gain = 0.25})
 					if self.object:get_hp() <= 0 then
@@ -260,24 +261,25 @@ function mobs:register_mob(name, def)
 							yaw = yaw + math.pi
 						end
 						self.object:setyaw(yaw)
-						if dist > 2.2 then
-							if not self.v_start then
-								self.v_start = true
-								self:set_velocity(self.walk_velocity)
-							else
-								if self:get_velocity() <= 0.38 and self.object:getvelocity().y == 0 then
-									local v = self.object:getvelocity()
-									v.y = 8
-									self.object:setvelocity(v)
-								end
-								self:set_velocity(self.walk_velocity)
-							end
-							self:set_animation("walk")
-						else
+						if dist <= 2.2 then
 							self.v_start = false
 							self:set_velocity(0)
 							self:set_animation("stand")
+							return
 						end
+						
+						if not self.v_start then
+							self.v_start = true
+							self:set_velocity(self.walk_velocity)
+						else
+							if self:get_velocity() <= 0.5 and self.object:getvelocity().y == 0 then
+								local v = self.object:getvelocity()
+								v.y = 5.1
+								self.object:setvelocity(v)
+							end
+							self:set_velocity(self.walk_velocity)
+						end
+						self:set_animation("walk")
 						return
 					end
 				end
@@ -298,9 +300,9 @@ function mobs:register_mob(name, def)
 				if math.random(1, 100) <= 30 then
 					self.object:setyaw(self.object:getyaw()+((math.random(0,360)- 14.50)/180*math.pi))
 				end
-				if self:get_velocity() < 0.2 and self.object:getvelocity().y == 0 then
+				if self:get_velocity() < 0.5 and self.object:getvelocity().y == 0 then
 					local v = self.object:getvelocity()
-					v.y = 8
+					v.y = 5.1
 					self.object:setvelocity(v)
 				end
 				self:set_animation("walk")
@@ -342,20 +344,7 @@ function mobs:register_mob(name, def)
 					yaw = yaw+math.pi
 				end
 				self.object:setyaw(yaw)
-				if dist > 2.2 then
-					if not self.v_start then
-						self.v_start = true
-						self:set_velocity(self.run_velocity)
-					else
-						if self:get_velocity() < 0.5 and self.object:getvelocity().y == 0 then
-							local v = self.object:getvelocity()
-							v.y = 8
-							self.object:setvelocity(v)
-						end
-						self:set_velocity(self.run_velocity)
-					end
-					self:set_animation("run")
-				else
+				if dist <= 2.2 then
 					self:set_velocity(0)
 					self:set_animation("punch")
 					self.v_start = false
@@ -367,7 +356,21 @@ function mobs:register_mob(name, def)
 							damage_groups = {fleshy = self.damage}
 						}, vec)
 					end
+					return
 				end
+				
+				if not self.v_start then
+					self.v_start = true
+					self:set_velocity(self.run_velocity)
+				else
+					if self:get_velocity() < 0.5 and self.object:getvelocity().y == 0 then
+						local v = self.object:getvelocity()
+						v.y = 5.1
+						self.object:setvelocity(v)
+					end
+					self:set_velocity(self.run_velocity)
+				end
+				self:set_animation("run")
 			end
 		end,
 		
