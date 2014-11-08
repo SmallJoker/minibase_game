@@ -134,13 +134,13 @@ function mobs:register_mob(name, def)
 				if minetest.get_item_group(minetest.get_node(self.object:getpos()).name, "water") ~= 0 then
 					self.object:setacceleration({x = x, y = 1.5, z = z})
 				else
-					self.object:setacceleration({x = x, y = -14.5, z = z})
+					self.object:setacceleration({x = x, y = -10, z = z})
 				end
 			else
 				if minetest.get_item_group(minetest.get_node(self.object:getpos()).name, "water") ~= 0 then
 					self.object:setacceleration({x = 0, y = 1.5, z = 0})
 				else
-					self.object:setacceleration({x = 0, y = -14.5, z = 0})
+					self.object:setacceleration({x = 0, y = -10, z = 0})
 				end
 			end
 			

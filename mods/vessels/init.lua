@@ -5,7 +5,7 @@ minetest.register_node("vessels:glass_bottle", {
 	description = "Glass Bottle (empty)",
 	drawtype = "plantlike",
 	tiles = {"vessels_glass_bottle.png"},
-	inventory_image = "vessels_glass_bottle_inv.png",
+	inventory_image = "vessels_glass_bottle.png",
 	wield_image = "vessels_glass_bottle.png",
 	paramtype = "light",
 	walkable = false,
@@ -13,7 +13,7 @@ minetest.register_node("vessels:glass_bottle", {
 		type = "fixed",
 		fixed = {-0.25, -0.5, -0.25, 0.25, 0.4, 0.25}
 	},
-	groups = {vessel=1,dig_immediate=3,attached_node=1},
+	groups = {vessel=1, dig_immediate=3, attached_node=1},
 	sounds = default.node_sound_glass_defaults(),
 })
 
@@ -30,7 +30,7 @@ minetest.register_node("vessels:drinking_glass", {
 	description = "Drinking Glass (empty)",
 	drawtype = "plantlike",
 	tiles = {"vessels_drinking_glass.png"},
-	inventory_image = "vessels_drinking_glass_inv.png",
+	inventory_image = "vessels_drinking_glass.png",
 	wield_image = "vessels_drinking_glass.png",
 	paramtype = "light",
 	walkable = false,
@@ -38,7 +38,7 @@ minetest.register_node("vessels:drinking_glass", {
 		type = "fixed",
 		fixed = {-0.25, -0.5, -0.25, 0.25, 0.4, 0.25}
 	},
-	groups = {vessel=1,dig_immediate=3,attached_node=1},
+	groups = {vessel=1, dig_immediate=3, attached_node=1},
 	sounds = default.node_sound_glass_defaults(),
 })
 
@@ -55,7 +55,7 @@ minetest.register_node("vessels:steel_bottle", {
 	description = "Heavy Steel Bottle (empty)",
 	drawtype = "plantlike",
 	tiles = {"vessels_steel_bottle.png"},
-	inventory_image = "vessels_steel_bottle_inv.png",
+	inventory_image = "vessels_steel_bottle.png",
 	wield_image = "vessels_steel_bottle.png",
 	paramtype = "light",
 	walkable = false,
@@ -63,7 +63,7 @@ minetest.register_node("vessels:steel_bottle", {
 		type = "fixed",
 		fixed = {-0.25, -0.5, -0.25, 0.25, 0.4, 0.25}
 	},
-	groups = {vessel=1,dig_immediate=3,attached_node=1},
+	groups = {vessel=1, dig_immediate=3, attached_node=1},
 	sounds = default.node_sound_defaults(),
 })
 
