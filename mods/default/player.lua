@@ -9,17 +9,17 @@ local main_model = false
 
 function default.player_register_model(name, def)
 	def = def or {}
-	def.animation_speed = def.animation_speed or 30
+	def.animation_speed = def.animation_speed or 35
 	def.textures = def.textures or {"character.png"}
 	def.visual_size = def.visual_size or {x = 1, y = 1}
 	if not def.animations then
 		def.animations = {
-			stand     = {x = 0, y = 79},
-			lay       = {x = 162, y = 166},
-			walk      = {x = 168, y = 187},
-			mine      = {x = 189, y = 198},
-			walk_mine = {x = 200, y = 219},
-			sit       = {x = 81, y = 160},
+			stand		= {x = 0, y = 79},
+			lay			= {x = 162, y = 166},
+			walk		= {x = 168, y = 187},
+			mine		= {x = 189, y = 198},
+			walk_mine	= {x = 200, y = 219},
+			sit			= {x = 81, y = 160},
 		}
 	end
 	all_models[name] = def
