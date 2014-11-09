@@ -53,14 +53,8 @@ function stairs.register_stair(subname, recipeitem, groups, images, description,
 		end,
 	})
 
-	-- for replace ABM
-	minetest.register_node(":stairs:stair_" .. subname.."upside_down", {
-		replace_name = "stairs:stair_" .. subname,
-		groups = {slabs_replace=1},
-	})
-
 	minetest.register_craft({
-		output = "stairs:stair_" .. subname .. " 4",
+		output = "stairs:stair_" .. subname .. " 8",
 		recipe = {
 			{recipeitem, "", ""},
 			{recipeitem, recipeitem, ""},
@@ -68,9 +62,8 @@ function stairs.register_stair(subname, recipeitem, groups, images, description,
 		},
 	})
 
-	-- Flipped recipe for the silly minecrafters
 	minetest.register_craft({
-		output = "stairs:stair_" .. subname .. " 4",
+		output = "stairs:stair_" .. subname .. " 8",
 		recipe = {
 			{"", "", recipeitem},
 			{"", recipeitem, recipeitem},
@@ -175,12 +168,6 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 		end,
 	})
 
-	-- for replace ABM
-	minetest.register_node(":stairs:slab_" .. subname.."upside_down", {
-		replace_name = "stairs:slab_"..subname,
-		groups = {slabs_replace=1},
-	})
-
 	minetest.register_craft({
 		output = "stairs:slab_" .. subname .. " 6",
 		recipe = {
@@ -188,23 +175,6 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 		},
 	})
 end
-
--- Replace old "upside_down" nodes with new param2 versions
-minetest.register_abm({
-	nodenames = {"group:slabs_replace"},
-	interval = 1,
-	chance = 1,
-	action = function(pos, node)
-		node.name = minetest.registered_nodes[node.name].replace_name
-		node.param2 = node.param2 + 20
-		if node.param2 == 21 then
-			node.param2 = 23
-		elseif node.param2 == 23 then
-			node.param2 = 21
-		end
-		minetest.set_node(pos, node)
-	end,
-})
 
 -- Nodes will be called stairs:{stair,slab}_<subname>
 function stairs.register_stair_and_slab(subname, recipeitem, groups, images, desc_stair, desc_slab, sounds)
