@@ -3,7 +3,7 @@ dofile(minetest.get_modpath("mobs").."/api.lua")
 mobs:register_mob("mobs:stone_monster", {
 	type = "monster",
 	hp_max = 10,
-	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.9, 0.4},
+	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.8, 0.4},
 	visual = "mesh",
 	mesh = "mobs_stone_monster.x",
 	textures = {"mobs_stone_monster.png"},
@@ -58,7 +58,7 @@ mobs:register_mob("mobs:sheep", {
 		}
 	},
 	drawtype = "front",
-	water_damage = 4,
+	water_damage = 3,
 	lava_damage = 8,
 	animation = {
 		speed_normal = 17,
@@ -127,6 +127,6 @@ minetest.register_craft({
 --	max_light, min_light, chance, active_object_count, max_height)
 
 mobs:register_spawn("mobs:sheep", "Sheep", {"default:dirt_with_grass"},
-	16,	9,	15000,	2,	100)
+	16,	8,	15000,	2,	100)
 mobs:register_spawn("mobs:stone_monster", "Stone monster", {"default:stone"},
-	1,	-1,	5000,	2,	0)
+	1,	-1,	5000,	2,	-10)
