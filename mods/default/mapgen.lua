@@ -448,16 +448,16 @@ minetest.register_biome({
 
 minetest.register_biome({
 	name = "mountain",
-	node_top = "default:snowblock",			depth_top = 1,
-	node_filler = "default:dirt_with_snow",		depth_filler = 1,
-	height_min = 41,				height_max = 80,
+	node_top = "default:dirt_with_snow",			depth_top = 1,
+	node_filler = "default:dirt",		depth_filler = 2,
+	height_min = 41,				height_max = 50,
 })
 
 minetest.register_biome({
 	name = "alpine",
 	node_top = "default:snowblock",			depth_top = 1,
 	node_filler = "default:dirt_with_snow",		depth_filler = 1,
-	height_min = 81,				height_max = 300,
+	height_min = 51,				height_max = 300,
 })
 
 minetest.register_biome({
