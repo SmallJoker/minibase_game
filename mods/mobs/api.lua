@@ -130,9 +130,10 @@ function mobs:register_mob(name, def)
 			end
 			self.punch_timer = 0
 			
+			-- Jump
 			local real_speed = self:get_speed(self.state)
 			if self:get_velocity() < real_speed - 0.15 and vel.y == 0 then
-				vel.y = 6
+				vel.y = 6.5
 				self.object:setvelocity(vel)
 			else
 				self:set_velocity(real_speed)
@@ -263,7 +264,7 @@ function mobs:register_mob(name, def)
 					other_state = "stand"
 				end
 				
-				local r = math.random(30)
+				local r = math.random(25)
 				if r == 1 then
 					self:set_animation(other_state)
 				elseif r == 2 or r == 3 then
