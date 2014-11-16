@@ -307,6 +307,24 @@ minetest.register_node("default:glass", {
 	sounds = default.node_sound_glass_defaults(),
 })
 
+minetest.register_node("default:window_glass", {
+	description = "Window glass",
+	tiles = {"default_glass.png"},
+	paramtype2 = "facedir",
+	drawtype = "nodebox",
+	paramtype = "light",
+	sunlight_propagates = true,
+	is_ground_content = false,
+	groups = {cracky=3, oddly_breakable_by_hand=3},
+	sounds = default.node_sound_glass_defaults(),
+	node_box = {
+		type = "fixed",
+		fixed = {
+			{-0.5, -0.5, -0.05, 0.5, 0.5, 0.05}, -- NodeBox1
+		}
+	}
+})
+
 minetest.register_node("default:fence_wood", {
 	description = "Wooden fence",
 	drawtype = "fencelike",

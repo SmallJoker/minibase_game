@@ -356,6 +356,12 @@ minetest.register_craft({
 	}
 })
 
+minetest.register_craft({
+	output = "default:window_glass 15",
+	recipe = {
+		{"default:glass", "default:glass", "default:glass"}
+	}
+})
 
 --
 -- Crafting (tool repair)

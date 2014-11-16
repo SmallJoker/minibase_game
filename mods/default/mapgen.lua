@@ -404,7 +404,7 @@ minetest.register_biome({
 	name = "forest",
 	node_top = "default:dirt_with_grass",		depth_top = 1,
 	node_filler = "default:dirt",			depth_filler = 3,
-	height_min = 2,					height_max =40,
+	height_min = 2,					height_max = 40,
 	heat_point = 50,				humidity_point = 80,
 })
 
@@ -427,7 +427,7 @@ minetest.register_biome({
 	name = "tropical_beach",
 	node_top = "default:sand",			depth_top = 5,
 	height_min = -500, 				height_max = 3,
-	heat_point = 80.0,				humidity_point = 50,
+	heat_point = 80,				humidity_point = 50,
 })
 
 minetest.register_biome({
@@ -450,14 +450,14 @@ minetest.register_biome({
 	name = "mountain",
 	node_top = "default:dirt_with_snow",			depth_top = 1,
 	node_filler = "default:dirt",		depth_filler = 2,
-	height_min = 41,				height_max = 50,
+	height_min = 41,				height_max = 60,
 })
 
 minetest.register_biome({
 	name = "alpine",
 	node_top = "default:snowblock",			depth_top = 1,
 	node_filler = "default:dirt_with_snow",		depth_filler = 1,
-	height_min = 51,				height_max = 300,
+	height_min = 61,				height_max = 300,
 })
 
 minetest.register_biome({
