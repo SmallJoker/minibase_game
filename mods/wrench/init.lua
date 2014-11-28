@@ -30,6 +30,7 @@ end
 
 -- Boilerplate to support localized strings if intllib mod is installed.
 local S
+intllib = intllib or false
 if intllib then
 	S = intllib.Getter()
 else

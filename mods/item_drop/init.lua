@@ -91,7 +91,7 @@ minetest.registered_entities["__builtin:item"].set_item = function(self, itemstr
 		max_count = 4
 	end
 	local a = 0.2 + 0.16*(count / max_count)
-	prop = {
+	local prop = {
 		is_visible = true,
 		visual = "wielditem",
 		textures = {itemname},
