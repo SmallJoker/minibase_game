@@ -13,29 +13,16 @@ available to survival-mode players.
 
 local LATEST_SERIALIZATION_VERSION = 1
 
-wrench = {}
-
-local modpath = minetest.get_modpath("wrench")
-dofile(modpath.."/support.lua")
-
-if minetest.get_modpath("bitchange") then
-	dofile(modpath.."/bitchange.lua")
-end
-if minetest.get_modpath("technic") then
-	dofile(modpath.."/technic.lua")
-end
-if minetest.get_modpath("technic_chests") then
-	dofile(modpath.."/technic_chests.lua")
-end
-
 -- Boilerplate to support localized strings if intllib mod is installed.
-local S
+S = 1
 intllib = intllib or false
 if intllib then
 	S = intllib.Getter()
 else
 	S = function(s) return s end
 end
+
+wrench = {}
 
 local function get_meta_type(name, metaname)
 	local def = wrench.registered_nodes[name]
@@ -45,7 +32,7 @@ local function get_meta_type(name, metaname)
 	return def.metas[metaname]
 end
 
-local function get_pickup_name(name)
+function wrench.get_pickup_name(name)
 	return "wrench:picked_up_"..(name:gsub(":", "_"))
 end
 
@@ -73,22 +60,18 @@ local function restore(pos, placer, itemstack)
 	return itemstack
 end
 
-for name, info in pairs(wrench.registered_nodes) do
-	local olddef = minetest.registered_nodes[name]
-	if olddef then
-		local newdef = {}
-		for key, value in pairs(olddef) do
-			newdef[key] = value
-		end
-		newdef.stack_max = 1
-		newdef.description = S("%s with items"):format(newdef.description)
-		newdef.groups = {}
-		newdef.groups.not_in_creative_inventory = 1
-		newdef.on_construct = nil
-		newdef.on_destruct = nil
-		newdef.after_place_node = restore
-		minetest.register_node(":"..get_pickup_name(name), newdef)
-	end
+-- Add support for default and other mods
+local modpath = minetest.get_modpath("wrench")
+dofile(modpath.."/support.lua")
+
+if minetest.get_modpath("bitchange") then
+	dofile(modpath.."/bitchange.lua")
+end
+if minetest.get_modpath("technic") then
+	dofile(modpath.."/technic.lua")
+end
+if minetest.get_modpath("technic_chests") then
+	dofile(modpath.."/technic_chests.lua")
 end
 
 minetest.register_tool("wrench:wrench", {
@@ -122,7 +105,7 @@ minetest.register_tool("wrench:wrench", {
 			return
 		end
 
-		local stack = ItemStack(get_pickup_name(name))
+		local stack = ItemStack(wrench.get_pickup_name(name))
 		local player_inv = placer:get_inventory()
 		if not player_inv:room_for_item("main", stack) then
 			return
@@ -171,7 +154,7 @@ minetest.register_tool("wrench:wrench", {
 		
 		stack:set_metadata(minetest.serialize(metadata))
 		minetest.remove_node(pos)
-		itemstack:add_wear(65535 / 20)
+		itemstack:add_wear(65535 / 40)
 		player_inv:add_item("main", stack)
 		return itemstack
 	end,
