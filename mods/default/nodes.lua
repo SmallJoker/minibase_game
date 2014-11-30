@@ -1194,7 +1194,7 @@ minetest.register_node("default:snow", {
 			{-0.5, -0.5, -0.5,  0.5, -0.5+2/16, 0.5},
 		},
 	},
-	groups = {crumbly=3,falling_node=1, freezes=1, float=1},
+	groups = {crumbly=3, falling_node=1, freezes=1},
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name="default_snow_footstep", gain=0.25},
 		dug = {name="default_snow_footstep", gain=0.75},
@@ -1204,11 +1204,10 @@ minetest.register_node("default:snow", {
 			return
 		end
 		
-		local d = minetest.get_node_level(pos)
-		d = (d / 7) - 1
-		if d > 0 then
+		local count = minetest.get_node_level(pos) / 7 - 1
+		if count > 0 then
 			local inv = digger:get_inventory()
-			inv:add_item("main", "default:snow "..d)
+			inv:add_item("main", "default:snow "..count)
 		end
 		minetest.node_dig(pos, node, digger)
 	end

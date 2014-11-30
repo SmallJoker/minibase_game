@@ -37,7 +37,7 @@ minetest.register_abm({
 minetest.register_abm({
 	nodenames = {"group:freezes", "group:cold"},
 	neighbors = {"group:hot"},
-	interval = 10,
+	interval = 5,
 	chance = 10,
 	action = function(pos, node)
 		local melt = minetest.registered_nodes[node.name].freezemelt
