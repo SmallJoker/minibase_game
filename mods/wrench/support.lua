@@ -88,7 +88,7 @@ function wrench:register_node(name, def)
 	newdef.groups.not_in_creative_inventory = 1
 	newdef.on_construct = nil
 	newdef.on_destruct = nil
-	newdef.after_place_node = restore
+	newdef.after_place_node = wrench.restore
 	
 	self.registered_nodes[name] = def
 	minetest.register_node(":"..wrench.get_pickup_name(name), newdef)

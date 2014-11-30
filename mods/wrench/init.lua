@@ -36,7 +36,7 @@ function wrench.get_pickup_name(name)
 	return "wrench:picked_up_"..(name:gsub(":", "_"))
 end
 
-local function restore(pos, placer, itemstack)
+function wrench.restore(pos, placer, itemstack)
 	local name = itemstack:get_name()
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
