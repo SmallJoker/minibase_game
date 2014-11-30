@@ -576,25 +576,23 @@ minetest.register_node("default:torch", {
 
 minetest.register_node("default:sign_wall", {
 	description = "Sign",
-	drawtype = "signlike",
-	tiles = {"default_sign_wall.png"},
+	drawtype = "nodebox",
+	tiles = {"default_sign.png"},
 	inventory_image = "default_sign_wall.png",
 	wield_image = "default_sign_wall.png",
 	paramtype = "light",
 	paramtype2 = "wallmounted",
 	sunlight_propagates = true,
 	is_ground_content = false,
-	walkable = false,
-	selection_box = {
-		type = "wallmounted",
-		wall_side = { -0.5,-0.3,-0.4,-0.4,0.3,0.4 },
-		--wall_top = <default>
-		--wall_bottom = <default>
-	},
+	node_box = {
+ 		type = "wallmounted",
+		wall_top    = {-0.4375, 0.4375, -0.3125, 0.4375, 0.5, 0.3125},
+		wall_bottom = {-0.4375, -0.5, -0.3125, 0.4375, -0.4375, 0.3125},
+		wall_side   = {-0.5, -0.3125, -0.4375, -0.4375, 0.3125, 0.4375},
+ 	},
 	groups = {choppy=2,dig_immediate=2,attached_node=1},
 	sounds = default.node_sound_defaults(),
 	on_construct = function(pos)
-		--local n = minetest.get_node(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec", "field[text;;${text}]")
 		meta:set_string("infotext", "\"\"")
