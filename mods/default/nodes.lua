@@ -688,7 +688,7 @@ minetest.register_node("default:chest_locked", {
 		inv:set_size("main", 8*4)
 	end,
 	can_dig = function(pos,player)
-		local meta = minetest.get_meta(pos);
+		local meta = minetest.get_meta(pos)
 		local inv = meta:get_inventory()
 		return inv:is_empty("main") and has_locked_chest_privilege(meta, player)
 	end,
@@ -763,7 +763,7 @@ minetest.register_node("default:furnace", {
 		inv:set_size("dst", 4)
 	end,
 	can_dig = function(pos,player)
-		local meta = minetest.get_meta(pos);
+		local meta = minetest.get_meta(pos)
 		local inv = meta:get_inventory()
 		if not inv:is_empty("fuel") or
 				not inv:is_empty("dst") or
@@ -850,14 +850,14 @@ minetest.register_node("default:furnace_active", {
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		meta:set_string("formspec", default.furnace_inactive_formspec)
-		meta:set_string("infotext", "Furnace");
+		meta:set_string("infotext", "Furnace")
 		local inv = meta:get_inventory()
 		inv:set_size("fuel", 1)
 		inv:set_size("src", 1)
 		inv:set_size("dst", 4)
 	end,
 	can_dig = function(pos,player)
-		local meta = minetest.get_meta(pos);
+		local meta = minetest.get_meta(pos)
 		local inv = meta:get_inventory()
 		if not inv:is_empty("fuel") or
 				not inv:is_empty("dst") or
@@ -1135,6 +1135,7 @@ minetest.register_node("default:grass_1", {
 	paramtype = "light",
 	walkable = false,
 	buildable_to = true,
+	waving = 1,
 	groups = {snappy=3, flammable=3, flora=1, attached_node=1},
 	sounds = default.node_sound_leaves_defaults(),
 	selection_box = {
@@ -1159,6 +1160,7 @@ for c = 2, 5 do
 		paramtype = "light",
 		walkable = false,
 		buildable_to = true,
+		waving = 1,
 		drop = "default:grass_1",
 		groups = {snappy=3, flammable=3, flora=1, attached_node=1, not_in_creative_inventory=1},
 		sounds = default.node_sound_leaves_defaults(),
