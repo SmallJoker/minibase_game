@@ -106,8 +106,6 @@ ondie_messages = {
 	a12 = " thought they were inflammable.",
 }
 
-local spawnPos = minetest.setting_get_pos("static_spawnpoint")
-
 minetest.register_on_dieplayer(function(player)
 	if minetest.setting_getbool("creative_mode") then
 		return
@@ -118,9 +116,10 @@ minetest.register_on_dieplayer(function(player)
 	pos.y = math.floor(pos.y+0.5)
 	pos.z = math.floor(pos.z+0.5)
 	
+	local spawnPos = minetest.setting_get_pos("static_spawnpoint")
 	if spawnPos then
 		-- died at spawn?
-		if vector.equals(spawnPos, pos) then
+		if vector.distance(spawnPos, pos) < 10 then
 			return
 		end
 	end
