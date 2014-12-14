@@ -174,6 +174,16 @@ minetest.register_craft({
 
 minetest.register_craft({
 	output = "default:clay",
+	type = "shapeless",
+	recipe = {
+		"group:flora", "group:leaves",
+		"default:dirt", "default:dirt",
+		"default:gravel", "default:gravel",
+	}
+})
+
+minetest.register_craft({
+	output = "default:clay",
 	recipe = {
 		{"default:clay_lump", "default:clay_lump"},
 		{"default:clay_lump", "default:clay_lump"},
