@@ -46,7 +46,6 @@ mobs:register_mob("mobs:sheep", {
 	textures = {"mobs_sheep.png"},
 	visual = "mesh",
 	mesh = "mobs_sheep.x",
-	makes_footstep_sound = true,
 	walk_velocity = 1,
 	armor = 60,
 	drops = {

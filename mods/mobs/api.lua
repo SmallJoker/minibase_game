@@ -28,9 +28,7 @@ function mobs:register_mob(name, def)
 		follow = def.follow or "",
 		
 		punch_timer = 0,
-		env_damage_timer = 0,
 		state = "stand",
-		v_start = false,
 		to_player = nil,
 		lifetimer = 600, --10 min
 		tamed = false,
@@ -124,15 +122,16 @@ function mobs:register_mob(name, def)
 			end
 			self.object:setacceleration(accel)
 			
+			-- Do the important things every second
 			self.punch_timer = self.punch_timer + dtime
-			if self.punch_timer < 1.0 then
+			if self.punch_timer < 1 then
 				return
 			end
 			self.punch_timer = 0
 			
 			-- Jump
 			local real_speed = self:get_speed(self.state)
-			if self:get_velocity() < real_speed - 0.15 and vel.y == 0 then
+			if self:get_velocity() < real_speed - 0.05 and vel.y == 0 then
 				vel.y = 6.5
 				self.object:setvelocity(vel)
 			else
@@ -163,6 +162,21 @@ function mobs:register_mob(name, def)
 					minetest.sound_play("player_death", {object = self.object, gain = 0.4})
 					self.object:remove()
 					return
+				end
+			end
+			
+			-- Footstep sound
+			if (self.animation.current == "run" or self.animation.current == "walk") and
+					self.makes_footstep_sound then
+				node = minetest.get_node({x = my_pos.x, y = my_pos.y - 1, x = my_pos.z}).name
+				local def = minetest.registered_nodes[node]
+				if def and def.sounds and def.sounds.footstep and 
+						def.sounds.footstep.name ~= "" then
+					local sound_gain = def.sounds.footstep.gain or 1
+					minetest.sound_play(sound_name, {
+						pos = my_pos,
+						gain = sound_gain
+					})
 				end
 			end
 			
@@ -214,8 +228,8 @@ function mobs:register_mob(name, def)
 					dist = (vec.x^2 + vec.y^2 + vec.z^2) ^ 0.5
 				end
 				
+				-- Out of view
 				if dist > self.view_range or self.to_player:get_hp() <= 0 then
-					self.v_start = false
 					self.to_player = nil
 					self:set_animation("stand")
 					return
@@ -223,23 +237,19 @@ function mobs:register_mob(name, def)
 				
 				-- Target reached
 				if dist <= 2.2 then
-					self.v_start = false
 					if self.type == "monster" then
 						self:set_animation("punch")
-							minetest.sound_play("mobs_punch", {object = self.object, gain = 1})
-							self.to_player:punch(self.object, 1.0,  {
-								full_punch_interval = 1.0,
-								damage_groups = {fleshy = self.damage}
-							}, vec)
+						minetest.sound_play("mobs_punch", {object = self.object, gain = 1})
+						self.to_player:punch(self.object, 1.0,  {
+							full_punch_interval = 1.0,
+							damage_groups = {fleshy = self.damage}
+						}, vec)
 					else
 						self:set_animation("stand")
 					end
 					return
 				end
-				
-				if not self.v_start then
-					self.v_start = true
-				end
+				-- Else shoot.
 				
 				local yaw = math.atan(vec.z / vec.x) + math.pi/2
 				if self.drawtype == "side" then
@@ -264,10 +274,10 @@ function mobs:register_mob(name, def)
 					other_state = "stand"
 				end
 				
-				local r = math.random(25)
-				if r == 1 then
+				local r = math.random(30)
+				if r == 10 or (r == 11 and other_state == "walk") then
 					self:set_animation(other_state)
-				elseif r == 2 or r == 3 then
+				elseif r <= 4 then
 					self.object:setyaw(self.object:getyaw() + (math.random(-90, 90) / 180 * math.pi))
 				end
 			end
