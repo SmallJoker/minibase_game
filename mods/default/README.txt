@@ -77,6 +77,7 @@ jojoa1997 (WTFPL):
 
 Jordach (CC BY-SA 3.0):
 	character.png
+	default_junglewood.png
 
 kaeza (WTFPL):
 	bubble.png
@@ -94,7 +95,6 @@ Krock (WTFPL):
 
 PilzAdam (WTFPL):
 	default_junglesapling.png
-	default_junglewood.png
 	default_obsidian_glass.png
 	default_obsidian_shard.png
 	default_gold_ingot.png
