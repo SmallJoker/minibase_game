@@ -4,7 +4,6 @@
 local function is_owner(pos, name)
 	local owner = minetest.get_meta(pos):get_string("owner")
 	if owner == "" or owner == name then
-	-- or minetest.get_player_privs(name).server
 		return true
 	end
 	return false
@@ -63,14 +62,14 @@ minetest.register_node("bones:bones", {
 			minetest.remove_node(pos)
 			return
 		end
-		if(is_owner(pos, player:get_player_name())) then
+		if is_owner(pos, player:get_player_name())  then
 			local player_inv = player:get_inventory()
-			for i=1,inv:get_size("main") do
-				local stk = inv:get_stack("main", i)
-				if player_inv:room_for_item("main", stk) then
-					player_inv:add_item("main", stk)
+			for i=1, inv:get_size("main") do
+				local stack = inv:get_stack("main", i)
+				if player_inv:room_for_item("main", stack) then
+					player_inv:add_item("main", stack)
 				else
-					minetest.add_item(pos, stk)
+					minetest.add_item(pos, stack)
 				end
 			end
 			minetest.remove_node(pos)
@@ -79,9 +78,9 @@ minetest.register_node("bones:bones", {
 	
 	on_timer = function(pos, elapsed)
 		local meta = minetest.get_meta(pos)
-		local dtime = meta:get_int("time")+elapsed
+		local dtime = meta:get_int("time") + elapsed
 		
-		if dtime >= 600 * 2 then
+		if dtime >= 60 * 20 then
 			meta:set_string("infotext", meta:get_string("owner").."'s old bones")
 			meta:set_string("owner", "")
 			return false
@@ -91,19 +90,19 @@ minetest.register_node("bones:bones", {
 	end,
 })
 
-ondie_messages = {
-	a1 = " hated the life.",
-	a2 = " didn't look down before walking.",
-	a3 = " walked into the fog. Never came back.",
-	a4 = " liked every possible tick-tock sound.",
-	a5 = " died.",
-	a6 = "'s last words were: >What the nether are you doing?<",
-	a7 = " did not believe the earth is a disk. - Sailed too far.",
-	a8 = " laughed and died.",
-	a9 = ": >Haha, I died faster than you!<",
-	a10 = " cried, but that did not help to survive.",
-	a11 = " tried to swim in lava. Failed somehow.",
-	a12 = " thought they were inflammable.",
+local death_messages = {
+	" hated the life.",
+	" didn't look down before walking.",
+	" walked into the fog. Never came back.",
+	" liked every possible tick-tock sound.",
+	" died.",
+	"'s last words were: >What the nether are you doing?<",
+	" did not believe the earth is a disk. - Sailed too far.",
+	" laughed and died.",
+	": >Haha, I died faster than you!<",
+	" cried, but that did not help to survive.",
+	" tried to swim in lava. Failed somehow.",
+	" thought they were inflammable.",
 }
 
 minetest.register_on_dieplayer(function(player)
@@ -111,10 +110,8 @@ minetest.register_on_dieplayer(function(player)
 		return
 	end
 	
-	local pos = player:getpos()
-	pos.x = math.floor(pos.x+0.5)
-	pos.y = math.floor(pos.y+0.5)
-	pos.z = math.floor(pos.z+0.5)
+	local pos = vector.round(player:getpos())
+	pos.y = pos.y - 1
 	
 	local spawnPos = minetest.setting_get_pos("static_spawnpoint")
 	if spawnPos then
@@ -124,8 +121,8 @@ minetest.register_on_dieplayer(function(player)
 		end
 	end
 	
-	local pn = player:get_player_name()
-	minetest.chat_send_all(pn..ondie_messages[("a"..(math.random(1,12)).."")])
+	local player_name = player:get_player_name()
+	minetest.chat_send_all(player_name..death_messages[math.random(#death_messages)])
     
 	local player_inv = player:get_inventory()
 	if player_inv:is_empty("main") then
@@ -140,7 +137,7 @@ minetest.register_on_dieplayer(function(player)
 		end
 		player_inv:set_list("main", {})
 		
-		minetest.chat_send_player(pn, "You died at "..minetest.pos_to_string(pos)..". There was no place for your bones.", true)
+		minetest.chat_send_player(player_name, "You died at "..minetest.pos_to_string(pos)..". You stuff has been dropped - there was no free place.")
 		return
 	end
 	
@@ -154,12 +151,12 @@ minetest.register_on_dieplayer(function(player)
 	player_inv:set_list("main", {})
 		
 	meta:set_string("formspec", "size[8,9;]"..
-			"list[current_name;main;0,0;8,4;]"..
-			"list[current_player;main;0,5;8,4;]")
-	meta:set_string("infotext", pn.."'s fresh bones")
-	meta:set_string("owner", pn)
+		"list[current_name;main;0,0;8,4;]"..
+		"list[current_player;main;0,5;8,4;]")
+	meta:set_string("infotext", player_name.."'s fresh bones")
+	meta:set_string("owner", player_name)
 	meta:set_int("time", 0)
-	minetest.chat_send_player(pn, "You died at "..minetest.pos_to_string(bpos)..". Your bones stay fresh for 20 minutes.", true)
+	minetest.chat_send_player(player_name, "You died at "..minetest.pos_to_string(bpos)..". Your bones stay fresh for 20 minutes.")
 	local timer = minetest.get_node_timer(bpos)
-    timer:start(10)
+	timer:start(10)
 end)
