@@ -183,50 +183,63 @@ function stairs.register_stair_and_slab(subname, recipeitem, groups, images, des
 end
 
 stairs.register_stair_and_slab("wood", "default:wood",
-		{snappy=2,choppy=2,oddly_breakable_by_hand=2,flammable=3},
+		{snappy=2, choppy=2, oddly_breakable_by_hand=2, flammable=3},
 		{"default_wood.png"},
-		"Wooden Stair",
-		"Wooden Slab",
+		"Wooden stair",
+		"Wooden slab",
 		default.node_sound_wood_defaults())
 
 stairs.register_stair_and_slab("stone", "default:stone",
 		{cracky=3},
 		{"default_stone.png"},
-		"Stone Stair",
-		"Stone Slab",
+		"Stone stair",
+		"Stone slab",
 		default.node_sound_stone_defaults())
 
 stairs.register_stair_and_slab("cobble", "default:cobble",
 		{cracky=3},
 		{"default_cobble.png"},
-		"Cobble Stair",
-		"Cobble Slab",
+		"Cobble stair",
+		"Cobble slab",
 		default.node_sound_stone_defaults())
 
 stairs.register_stair_and_slab("brick", "default:brick",
 		{cracky=3},
 		{"default_brick.png"},
-		"Brick Stair",
-		"Brick Slab",
+		"Brick stair",
+		"Brick slab",
 		default.node_sound_stone_defaults())
 
 stairs.register_stair_and_slab("sandstone", "default:sandstone",
-		{crumbly=2,cracky=2},
+		{crumbly=2, cracky=2},
 		{"default_sandstone.png"},
-		"Sandstone Stair",
-		"Sandstone Slab",
+		"Sandstone stair",
+		"Sandstone slab",
 		default.node_sound_stone_defaults())
 
 stairs.register_stair_and_slab("junglewood", "default:junglewood",
-		{snappy=2,choppy=2,oddly_breakable_by_hand=2,flammable=3},
+		{snappy=2, choppy=2, oddly_breakable_by_hand=2, flammable=3},
 		{"default_junglewood.png"},
-		"Junglewood Stair",
-		"Junglewood Slab",
+		"Junglewood stair",
+		"Junglewood slab",
 		default.node_sound_wood_defaults())
 
 stairs.register_stair_and_slab("stonebrick", "default:stonebrick",
 		{cracky=3},
 		{"default_stone_brick.png"},
-		"Stone Brick Stair",
-		"Stone Brick Slab",
+		"Stone brick stair",
+		"Stone brick slab",
+		default.node_sound_stone_defaults())
+
+		stairs.register_stair_and_slab("obsidian", "default:obsidian",
+		{cracky=1, level=2},
+		{"default_obsidian.png"},
+		"Obsidian stair",
+		"Obsidian slab",
+		default.node_sound_stone_defaults())
+stairs.register_stair_and_slab("obsidianbrick", "default:obsidianbrick",
+		{cracky=1, level=2},
+		{"default_obsidian_brick.png"},
+		"Obsidian brick stair",
+		"Obsidian brick slab",
 		default.node_sound_stone_defaults())

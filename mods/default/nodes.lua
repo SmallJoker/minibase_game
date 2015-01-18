@@ -400,14 +400,14 @@ minetest.register_node("default:water_flowing", {
 	tiles = {"default_water.png"},
 	special_tiles = {
 		{
-			image="default_water_flowing_animated.png",
-			backface_culling=false,
-			animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=0.8}
+			name = "default_water_flowing_animated.png",
+			backface_culling = false,
+			animation = {type="vertical_frames", aspect_w=16, aspect_h=16, length=0.8}
 		},
 		{
-			image="default_water_flowing_animated.png",
-			backface_culling=true,
-			animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=0.8}
+			name = "default_water_flowing_animated.png",
+			backface_culling = true,
+			animation = {type="vertical_frames", aspect_w=16, aspect_h=16, length=0.8}
 		},
 	},
 	alpha = WATER_ALPHA,
@@ -433,14 +433,16 @@ minetest.register_node("default:water_source", {
 	inventory_image = minetest.inventorycube("default_water.png"),
 	drawtype = "liquid",
 	tiles = {
-		{name="default_water_source_animated.png", animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=2.0}}
+		{
+			name = "default_water_source_animated.png", 
+			animation = {type="vertical_frames", aspect_w=16, aspect_h=16, length=2.0}
+		}
 	},
 	special_tiles = {
-		-- New-style water source material (mostly unused)
 		{
-			name="default_water_source_animated.png",
-			animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=2.0},
+			name = "default_water_source_animated.png",
 			backface_culling = false,
+			animation = {type="vertical_frames", aspect_w=16, aspect_h=16, length=2.0},
 		}
 	},
 	alpha = WATER_ALPHA,
@@ -467,14 +469,14 @@ minetest.register_node("default:lava_flowing", {
 	tiles = {"default_lava.png"},
 	special_tiles = {
 		{
-			image="default_lava_flowing_animated.png",
-			backface_culling=false,
-			animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=3.3}
+			name = "default_lava_flowing_animated.png",
+			backface_culling = false,
+			animation = {type="vertical_frames", aspect_w=16, aspect_h=16, length=3.3}
 		},
 		{
-			image="default_lava_flowing_animated.png",
-			backface_culling=true,
-			animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=3.3}
+			name = "default_lava_flowing_animated.png",
+			backface_culling = true,
+			animation = {type="vertical_frames", aspect_w=16, aspect_h=16, length=3.3}
 		},
 	},
 	paramtype = "light",
@@ -502,14 +504,16 @@ minetest.register_node("default:lava_source", {
 	inventory_image = minetest.inventorycube("default_lava.png"),
 	drawtype = "liquid",
 	tiles = {
-		{name="default_lava_source_animated.png", animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=3.0}}
+		{
+			name = "default_lava_source_animated.png",
+			animation = {type="vertical_frames", aspect_w=16, aspect_h=16, length=3.0}
+		}
 	},
 	special_tiles = {
-		-- New-style lava source material (mostly unused)
 		{
-			name="default_lava_source_animated.png",
-			animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=3.0},
+			name = "default_lava_source_animated.png",
 			backface_culling = false,
+			animation = {type="vertical_frames", aspect_w=16, aspect_h=16, length=3.0},
 		}
 	},
 	paramtype = "light",
@@ -550,11 +554,17 @@ minetest.register_node("default:lava_source", {
 minetest.register_node("default:torch", {
 	description = "Torch",
 	drawtype = "torchlike",
-	--tiles = {"default_torch_on_floor.png", "default_torch_on_ceiling.png", "default_torch.png"},
 	tiles = {
-		{name="default_torch_on_floor_animated.png", animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=3.0}},
-		{name="default_torch_on_ceiling_animated.png", animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=3.0}},
-		{name="default_torch_animated.png", animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=3.0}}
+		{
+			name = "default_torch_on_floor_animated.png",
+			animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=3.0}
+		}, {
+			name = "default_torch_on_ceiling_animated.png",
+			animation = {type="vertical_frames", aspect_w=16, aspect_h=16, length=3.0}
+		}, {
+			name = "default_torch_animated.png",
+			animation = {type="vertical_frames", aspect_w=16, aspect_h=16, length=3.0}
+		}
 	},
 	inventory_image = "default_torch_on_floor.png",
 	wield_image = "default_torch_on_floor.png",
@@ -1043,6 +1053,13 @@ minetest.register_node("default:obsidian", {
 	tiles = {"default_obsidian.png"},
 	groups = {cracky=1, level=2},
 	sounds = default.node_sound_stone_defaults(),
+})
+
+minetest.register_node("default:obsidianbrick", {
+	description = "Obsidian brick",
+	tiles = {"default_obsidian_brick.png"},
+	sounds = default.node_sound_stone_defaults(),
+	groups = {cracky=1, level=2},
 })
 
 minetest.register_node("default:nyancat", {
