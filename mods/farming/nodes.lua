@@ -2,7 +2,6 @@ minetest.register_node("farming:soil", {
 	description = "Soil",
 	tiles = {"farming_soil.png", "default_dirt.png"},
 	drop = "default:dirt",
-	is_ground_content = true,
 	freezemelt = "farming:soil_with_snow",
 	groups = {crumbly=3, not_in_creative_inventory=1, soil=2, can_freeze=1},
 	sounds = default.node_sound_dirt_defaults(),
@@ -12,10 +11,17 @@ minetest.register_node("farming:soil_wet", {
 	description = "Wet Soil",
 	tiles = {"farming_soil_wet.png", "farming_soil_wet_side.png"},
 	drop = "default:dirt",
-	is_ground_content = true,
 	freezemelt = "default:dirt_with_snow",
 	groups = {crumbly=3, not_in_creative_inventory=1, soil=3, can_freeze=1},
 	sounds = default.node_sound_dirt_defaults(),
+})
+
+minetest.register_node("farming:straw", {
+	description = "Straw",
+	tiles = {"farming_straw.png"},
+	is_ground_content = false,
+	groups = {snappy=3, flammable=4},
+	sounds = default.node_sound_leaves_defaults(),
 })
 
 minetest.register_abm({
