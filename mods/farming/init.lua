@@ -234,6 +234,7 @@ minetest.register_craftitem("farming:string", {
 	description = "String",
 	inventory_image = "farming_string.png",
 })
+minetest.register_alias("farming:cotton", "farming:string")
 
 minetest.register_craft({
 	output = "wool:white",

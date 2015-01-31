@@ -10,6 +10,8 @@ License of media (textures):
 ----------------------------
 Created by PilzAdam (License: WTFPL):
 	farming_bread.png
+	farming_soil.png
+	farming_soil_wet.png
 	farming_soil_wet_side.png
 	farming_string.png
 
@@ -17,16 +19,16 @@ Created by Calinou (License: CC BY-SA):
 	farming_tool_steelhoe.png
 	farming_tool_stonehoe.png
 	farming_tool_woodhoe.png
-	farming_soil.png
-	farming_soil_wet.png
 
 Created by VanessaE (License: WTFPL):
-	farming_cotton_seed.png
-	farming_wheat_seed.png
 	farming_flour.png
 	farming_wheat.png
-	farming_wheat_?.png
-	farming_cotton_?.png
+	farming_wheat_*.png
  
 Created by MasterGollum (License: WTFPL):
 	farming_straw.png
+
+Created by Gambit (License: WTFPL):
+	farming_cotton_*.png
+	farming_cotton_seed.png
+	farming_wheat_seed.png
