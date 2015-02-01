@@ -352,8 +352,8 @@ minetest.register_node("default:rail", {
 	is_ground_content = false,
 	selection_box = {
 		type = "fixed",
-         -- but how to specify the dimensions for curved and sideways rails?
-        fixed = {-1/2, -1/2, -1/2, 1/2, -1/2+1/16, 1/2},
+		 -- but how to specify the dimensions for curved and sideways rails?
+		fixed = {-1/2, -1/2, -1/2, 1/2, -1/2+1/16, 1/2},
 	},
 	groups = {bendy=2, dig_immediate=2, attached_node=1},
 })
@@ -596,7 +596,7 @@ minetest.register_node("default:sign_wall", {
 	is_ground_content = false,
 	node_box = {
  		type = "wallmounted",
-		wall_top    = {-0.4375, 0.4375, -0.3125, 0.4375, 0.5, 0.3125},
+		wall_top	= {-0.4375, 0.4375, -0.3125, 0.4375, 0.5, 0.3125},
 		wall_bottom = {-0.4375, -0.5, -0.3125, 0.4375, -0.4375, 0.3125},
 		wall_side   = {-0.5, -0.3125, -0.4375, -0.4375, 0.3125, 0.4375},
  	},
@@ -709,14 +709,14 @@ minetest.register_node("default:chest_locked", {
 		end
 		return count
 	end,
-    allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
 		local meta = minetest.get_meta(pos)
 		if not has_locked_chest_privilege(meta, player) then
 			return 0
 		end
 		return stack:get_count()
 	end,
-    allow_metadata_inventory_take = function(pos, listname, index, stack, player)
+	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
 		local meta = minetest.get_meta(pos)
 		if not has_locked_chest_privilege(meta, player) then
 			return 0

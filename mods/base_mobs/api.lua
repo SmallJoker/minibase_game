@@ -1,5 +1,5 @@
-mobs = {}
-function mobs:register_mob(name, def)
+base_mobs = {}
+function base_mobs:register_mob(name, def)
 	minetest.register_entity(name, {
 		hp_max = def.hp_max,
 		physical = true,
@@ -239,7 +239,7 @@ function mobs:register_mob(name, def)
 				if dist <= 2.2 then
 					if self.type == "monster" then
 						self:set_animation("punch")
-						minetest.sound_play("mobs_punch", {object = self.object, gain = 1})
+						minetest.sound_play("base_mobs_punch", {object = self.object, gain = 1})
 						self.to_player:punch(self.object, 1.0,  {
 							full_punch_interval = 1.0,
 							damage_groups = {fleshy = self.damage}
@@ -342,9 +342,9 @@ function mobs:register_mob(name, def)
 	})
 end
 
-mobs.spawning_mobs = {}
-function mobs:register_spawn(name, description, nodes, max_light, min_light, chance, active_object_count, max_height, spawn_func)
-	mobs.spawning_mobs[name] = true
+base_mobs.spawning_mobs = {}
+function base_mobs:register_spawn(name, description, nodes, max_light, min_light, chance, active_object_count, max_height, spawn_func)
+	base_mobs.spawning_mobs[name] = true
 	minetest.register_abm({
 		nodenames = nodes,
 		neighbors = {"air"},
@@ -352,7 +352,7 @@ function mobs:register_spawn(name, description, nodes, max_light, min_light, cha
 		chance = chance,
 		action = function(pos, node, _, active_object_count_wider)
 			if active_object_count_wider > active_object_count then return end
-			if not mobs.spawning_mobs[name] then return end
+			if not base_mobs.spawning_mobs[name] then return end
 			pos.y = pos.y + 1
 			if minetest.get_node(pos).name ~= "air" then return end
 			if pos.y > max_height then return end

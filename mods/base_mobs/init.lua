@@ -1,12 +1,12 @@
-dofile(minetest.get_modpath("mobs").."/api.lua")
+dofile(minetest.get_modpath("base_mobs").."/api.lua")
 
-mobs:register_mob("mobs:stone_monster", {
+base_mobs:register_mob(":mobs:stone_monster", {
 	type = "monster",
 	hp_max = 10,
 	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.8, 0.4},
 	visual = "mesh",
-	mesh = "mobs_stone_monster.x",
-	textures = {"mobs_stone_monster.png"},
+	mesh = "base_mobs_stone_monster.x",
+	textures = {"base_mobs_stone_monster.png"},
 	visual_size = {x = 3, y = 2.6},
 	makes_footstep_sound = true,
 	view_range = 10,
@@ -39,13 +39,13 @@ mobs:register_mob("mobs:stone_monster", {
 	}
 })
 
-mobs:register_mob("mobs:sheep", {
+base_mobs:register_mob(":mobs:sheep", {
 	type = "animal",
 	hp_max = 15,
 	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
-	textures = {"mobs_sheep.png"},
+	textures = {"base_mobs_sheep.png"},
 	visual = "mesh",
-	mesh = "mobs_sheep.x",
+	mesh = "base_mobs_sheep.x",
 	walk_velocity = 1,
 	armor = 60,
 	drops = {
@@ -80,8 +80,8 @@ mobs:register_mob("mobs:sheep", {
 				self.food = 0
 				self.naked = false
 				self.object:set_properties({
-					textures = {"mobs_sheep.png"},
-					mesh = "mobs_sheep.x",
+					textures = {"base_mobs_sheep.png"},
+					mesh = "base_mobs_sheep.x",
 				})
 			end
 			
@@ -97,21 +97,21 @@ mobs:register_mob("mobs:sheep", {
 			minetest.sound_play("default_snow_footstep", {object = self.object, gain = 0.5})
 			
 			self.object:set_properties({
-				textures = {"mobs_sheep_shaved.png"},
-				mesh = "mobs_sheep_shaved.x",
+				textures = {"base_mobs_sheep_shaved.png"},
+				mesh = "base_mobs_sheep_shaved.x",
 			})
 		end
 	end,
 })
 
-minetest.register_craftitem("mobs:meat_raw", {
+minetest.register_craftitem(":mobs:meat_raw", {
 	description = "Raw Meat",
-	inventory_image = "mobs_meat_raw.png",
+	inventory_image = "base_mobs_meat_raw.png",
 })
 
-minetest.register_craftitem("mobs:meat", {
+minetest.register_craftitem(":mobs:meat", {
 	description = "Meat",
-	inventory_image = "mobs_meat.png",
+	inventory_image = "base_mobs_meat.png",
 	on_use = minetest.item_eat(4),
 })
 
@@ -125,7 +125,7 @@ minetest.register_craft({
 -- mobs:register_spawn(name, description, nodes, 
 --	max_light, min_light, chance, active_object_count, max_height)
 
-mobs:register_spawn("mobs:sheep", "Sheep", {"default:dirt_with_grass"},
+base_mobs:register_spawn("mobs:sheep", "Sheep", {"default:dirt_with_grass"},
 	16,	8,	15000,	2,	100)
-mobs:register_spawn("mobs:stone_monster", "Stone monster", {"default:stone"},
+base_mobs:register_spawn("mobs:stone_monster", "Stone monster", {"default:stone"},
 	1,	-1,	5000,	2,	-10)
