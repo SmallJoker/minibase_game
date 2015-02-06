@@ -1,8 +1,13 @@
 base_mobs = {}
 function base_mobs:register_mob(name, def)
+	if (def.type == "monster" or def.type == "defensive") and (not def.damage or def.damage <= 0) then
+		minetest.log("error", "The mob "..name.." with type '"..def.type.."' has no attack damage.")
+	end
+	
 	minetest.register_entity(name, {
 		hp_max = def.hp_max,
 		physical = true,
+		aggressive = false,
 		collisionbox = def.collisionbox,
 		collide_with_objects = def.collide_with_objects,
 		visual = def.visual,
@@ -22,7 +27,6 @@ function base_mobs:register_mob(name, def)
 		drawtype = def.drawtype,
 		on_rightclick = def.on_rightclick,
 		type = def.type,
-		attack_type = def.attack_type,
 		sounds = def.sounds,
 		animation = def.animation,
 		follow = def.follow or "",
@@ -53,7 +57,7 @@ function base_mobs:register_mob(name, def)
 			if type == "walk" then
 				vel = self.walk_velocity
 			elseif type == "run" then
-				vel = self.run_velocity
+				vel = self.run_velocity or self.walk_velocity
 			end
 			return vel
 		end,
@@ -181,7 +185,7 @@ function base_mobs:register_mob(name, def)
 			end
 			
 			local p, vec, dist = false, false, false
-			if self.type == "monster" and not self.to_player then
+			if self.aggressive and not self.to_player then
 				for _,player in ipairs(minetest.get_connected_players()) do
 					p = player:getpos()
 					vec = vector.subtract(p, my_pos)
@@ -208,7 +212,7 @@ function base_mobs:register_mob(name, def)
 				end
 			end
 			
-			if self.to_player and self.type ~= "monster" then
+			if self.to_player and not self.aggressive then
 				if self.to_player:get_wielded_item():get_name() ~= self.follow then
 					self.to_player = nil
 					self:set_animation("stand")
@@ -237,16 +241,17 @@ function base_mobs:register_mob(name, def)
 				
 				-- Target reached
 				if dist <= 2.2 then
-					if self.type == "monster" then
-						self:set_animation("punch")
-						minetest.sound_play("base_mobs_punch", {object = self.object, gain = 1})
-						self.to_player:punch(self.object, 1.0,  {
-							full_punch_interval = 1.0,
-							damage_groups = {fleshy = self.damage}
-						}, vec)
-					else
+					if not self.aggressive then
 						self:set_animation("stand")
+						return
 					end
+					
+					self:set_animation("punch")
+					minetest.sound_play("base_mobs_punch", {object = self.object, gain = 1})
+					self.to_player:punch(self.object, 1.0,  {
+						full_punch_interval = 1.0,
+						damage_groups = {fleshy = self.damage}
+					}, vec)
 					return
 				end
 				-- Else shoot.
@@ -260,7 +265,7 @@ function base_mobs:register_mob(name, def)
 				end
 				self.object:setyaw(yaw)
 				
-				if self.type == "monster" then
+				if self.aggressive then
 					self:set_animation("run")
 				else
 					self:set_animation("walk")
@@ -274,7 +279,7 @@ function base_mobs:register_mob(name, def)
 					other_state = "stand"
 				end
 				
-				local r = math.random(30)
+				local r = math.random(60)
 				if r == 10 or (r == 11 and other_state == "walk") then
 					self:set_animation(other_state)
 				elseif r <= 4 then
@@ -284,6 +289,9 @@ function base_mobs:register_mob(name, def)
 		end,
 		
 		on_activate = function(self, staticdata, dtime_s)
+			if self.type == "monster" then
+				self.aggressive = true
+			end
 			self.object:set_armor_groups({fleshy = self.armor})
 			self.object:setacceleration({x = 0, y = -10, z = 0})
 			self:set_animation("stand")
@@ -308,27 +316,16 @@ function base_mobs:register_mob(name, def)
 		get_staticdata = function(self)
 			local tmp = {
 				lifetimer = self.lifetimer,
-				tamed = self.tamed,
+				tamed = self.tamed
 			}
 			return minetest.serialize(tmp)
 		end,
 		
 		on_punch = function(self, hitter)
 			local hp = self.object:get_hp()
-			if hp >= 1 then
-				minetest.sound_play("player_damage", {object = self.object, gain = 0.25})
-				minetest.sound_play("hit", {pos = hitter:getpos(), gain = 0.4})
-			end
-			local y = self.object:getvelocity().y
-			if y == 0 and self.state == "walk" then
-				self.object:setvelocity({x = 0, y = y + 4, z = 0})
-				self:set_velocity(self.walk_velocity)
-			end
-			if hp > 0 then
-				return
-			end
+			local is_player = (hitter and hitter:is_player())
 			
-			if hitter and hitter:is_player() and hitter:get_inventory() then
+			if hp <= 0 and is_player and hitter:get_inventory() then
 				minetest.sound_play("player_death", {object = self.object, gain = 0.4})
 				minetest.sound_play("hit_death", {pos = hitter:getpos(), gain = 0.4})
 				for _,drop in ipairs(self.drops) do
@@ -336,6 +333,24 @@ function base_mobs:register_mob(name, def)
 						hitter:get_inventory():add_item("main", ItemStack(drop.name.." "..math.random(drop.min, drop.max)))
 					end
 				end
+				return
+			end
+			
+			local vel = self.object:getvelocity()
+			if vel.y == 0 and (self.state == "stand" or self.state == "walk") then
+				vel.y = 4
+				self.object:setvelocity(vel)
+				self:set_animation("walk")
+			end
+			
+			minetest.sound_play("player_damage", {object = self.object, gain = 0.25})
+			minetest.sound_play("hit", {pos = hitter:getpos(), gain = 0.4})
+			
+			if self.type == "defensive" then
+				if is_player then
+					self.to_player = hitter
+				end
+				self.aggressive = true
 			end
 		end,
 		

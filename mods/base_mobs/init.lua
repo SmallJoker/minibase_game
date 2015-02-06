@@ -24,7 +24,6 @@ base_mobs:register_mob(":mobs:stone_monster", {
 	armor = 50,
 	drawtype = "front",
 	light_damage = 3,
-	attack_type = "dogfight",
 	animation = {
 		speed_normal = 8,
 		speed_run = 40,
@@ -44,6 +43,7 @@ base_mobs:register_mob(":mobs:sheep", {
 	hp_max = 15,
 	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
 	textures = {"base_mobs_sheep.png"},
+	makes_footstep_sound = true,
 	visual = "mesh",
 	mesh = "base_mobs_sheep.x",
 	walk_velocity = 1,
