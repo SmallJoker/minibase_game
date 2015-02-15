@@ -68,25 +68,23 @@ function bucket.register_liquid(source, flowing, itemname, inventory_image, name
 				end
 			end
 			
-			if not place_at then
+			local player_name = user:get_player_name()
+			if not place_at or check_protection(place_at, player_name) then
 				return
 			end
 			
-			local player_name = user:get_player_name()
 			if source == "default:lava_source" and 
 					not minetest.is_singleplayer() then
-				if pointed_thing.above.y > -5 then
+				if place_at.y > -5 then
 					minetest.chat_send_player(player_name, "Do not place lava over -5m, that could end really bad!", true)
-					return itemstack
+					return
 				end
 			end
 			
-			if check_protection(place_at, player_name) then
-				return
-			end
-			
 			minetest.add_node(place_at, {name = source})
-			return {name = "bucket:bucket_empty"}
+			local inv = user:get_inventory()
+			inv:add_item("main", {name = "bucket:bucket_empty"})
+			return itemstack:take_item(0)
 		end
 	})
 end
@@ -94,7 +92,7 @@ end
 minetest.register_craftitem("bucket:bucket_empty", {
 	description = "Empty Bucket",
 	inventory_image = "bucket.png",
-	stack_max = 1,
+	stack_max = 25,
 	liquids_pointable = true,
 	on_use = function(itemstack, user, pointed_thing)
 		if pointed_thing.type ~= "node" then
@@ -105,15 +103,35 @@ minetest.register_craftitem("bucket:bucket_empty", {
 		local pos = pointed_thing.under
 		local node = minetest.get_node(pos)
 		local ldef = bucket.liquids[node.name]
+		local item_count = itemstack:get_count()
 		
-		if ldef and ldef.itemname and node.name == ldef.source then
-			if check_protection(pos, user:get_player_name()) then
-				return
+		if not (ldef or ldef.itemname or node.name ~= ldef.source) then
+			return
+		end
+		
+		if check_protection(pos, user:get_player_name()) then
+			return
+		end
+		
+		local giving_back = ItemStack(ldef.itemname)
+
+		if item_count > 1 then
+			-- If space ? Add filled bucket : Drop
+			local inv = user:get_inventory()
+			if inv:room_for_item("main", giving_back) then
+				inv:add_item("main", giving_back)
+			else
+				local pos = user:getpos()
+				pos.y = math.floor(pos.y + 0.5)
+				minetest.add_item(pos, giving_back)
 			end
 
-			minetest.remove_node(pos)
-			return {name = ldef.itemname}
+			-- Take one bucket
+			giving_back = ItemStack("bucket:bucket_empty "..(item_count-1))
 		end
+
+		minetest.remove_node(pos)
+		return ItemStack(giving_back)
 	end,
 })
 
