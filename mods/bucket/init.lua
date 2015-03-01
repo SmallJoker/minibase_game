@@ -105,7 +105,11 @@ minetest.register_craftitem("bucket:bucket_empty", {
 		local ldef = bucket.liquids[node.name]
 		local item_count = itemstack:get_count()
 		
-		if not (ldef or ldef.itemname or node.name ~= ldef.source) then
+		if not ldef then
+			return
+		end
+		
+		if not ldef.itemname or node.name ~= ldef.source then
 			return
 		end
 		
