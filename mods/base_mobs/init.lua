@@ -44,6 +44,7 @@ base_mobs:register_mob(":mobs:sheep", {
 	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
 	textures = {"base_mobs_sheep.png"},
 	makes_footstep_sound = true,
+	can_swim = true,
 	visual = "mesh",
 	mesh = "base_mobs_sheep.x",
 	walk_velocity = 1,
@@ -57,7 +58,7 @@ base_mobs:register_mob(":mobs:sheep", {
 		}
 	},
 	drawtype = "front",
-	water_damage = 3,
+	water_damage = 1,
 	lava_damage = 8,
 	animation = {
 		speed_normal = 17,

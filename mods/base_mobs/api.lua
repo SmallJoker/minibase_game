@@ -22,6 +22,8 @@ function base_mobs:register_mob(name, def)
 		light_damage = def.light_damage or 0,
 		water_damage = def.water_damage or 0,
 		lava_damage = def.lava_damage or 0,
+		fall_damage = def.fall_damage or 1,
+		can_swim = def.can_swim or false,
 		drops = def.drops,
 		armor = def.armor,
 		drawtype = def.drawtype,
@@ -36,6 +38,7 @@ function base_mobs:register_mob(name, def)
 		to_player = nil,
 		lifetimer = 600, --10 min
 		tamed = false,
+		old_y = nil,
 		
 		set_velocity = function(self, v)
 			local yaw = self.object:getyaw()
@@ -110,7 +113,8 @@ function base_mobs:register_mob(name, def)
 			
 			local vel = self.object:getvelocity()
 			local node = minetest.get_node(my_pos).name
-			local accel = {x = 0, y = 0, z = 0}
+			local real_speed = self:get_speed(self.state)
+			--[[local accel = {x = 0, y = 0, z = 0}
 			if vel.y > 0.1 then
 				local yaw = self.object:getyaw()
 				if self.drawtype == "side" then
@@ -118,13 +122,19 @@ function base_mobs:register_mob(name, def)
 				end
 				accel.x = math.sin(yaw) * -2
 				accel.z = math.cos(yaw) * 2
+			end]]
+			if self.can_swim then
+				local accel = {x = 0, y = 0, z = 0}
+				if minetest.get_item_group(node, "water") ~= 0 then
+					accel.y = 2.1
+				else
+					accel.y = -10
+				end
+				self.object:setacceleration(accel)
+				if real_speed == 0 then
+					self:set_animation("walk")
+				end
 			end
-			if minetest.get_item_group(node, "water") ~= 0 then
-				accel.y = 2.1
-			else
-				accel.y = -10
-			end
-			self.object:setacceleration(accel)
 			
 			-- Do the important things every second
 			self.punch_timer = self.punch_timer + dtime
@@ -134,7 +144,6 @@ function base_mobs:register_mob(name, def)
 			self.punch_timer = 0
 			
 			-- Jump
-			local real_speed = self:get_speed(self.state)
 			if self:get_velocity() < real_speed - 0.05 and vel.y == 0 then
 				vel.y = 6.5
 				self.object:setvelocity(vel)
@@ -155,6 +164,14 @@ function base_mobs:register_mob(name, def)
 			if self.lava_damage ~= 0 and minetest.get_item_group(node, "lava") ~= 0 then
 				damage = damage + self.lava_damage
 			end
+			if self.fall_damage ~= 0 and self.old_y then
+				local d = self.old_y - my_pos.y
+				if d > 5 then
+					damage = damage + math.floor(d - 5)
+				end
+			end
+			
+			self.old_y = my_pos.y
 			
 			if damage ~= 0 then
 				self.object:set_hp(self.object:get_hp() - damage)
@@ -325,15 +342,28 @@ function base_mobs:register_mob(name, def)
 			local hp = self.object:get_hp()
 			local is_player = (hitter and hitter:is_player())
 			
-			if hp <= 0 and is_player and hitter:get_inventory() then
+			if hp <= 0 then
+				if not self.drops then
+					return
+				end
+				local stack = nil
 				minetest.sound_play("player_death", {object = self.object, gain = 0.4})
 				minetest.sound_play("hit_death", {pos = hitter:getpos(), gain = 0.4})
 				for _,drop in ipairs(self.drops) do
 					if math.random(drop.chance) == 1 then
-						hitter:get_inventory():add_item("main", ItemStack(drop.name.." "..math.random(drop.min, drop.max)))
+						stack = ItemStack(drop.name.." "..math.random(drop.min, drop.max))
 					end
 				end
-				return
+				if not stack then
+					return
+				end
+				if is_player and hitter:get_inventory() then
+					hitter:get_inventory():add_item("main", stack)
+					return
+				end
+				local pos = self.object:getpos()
+				pos.y = pos.y + 0.4
+				minetest.add_item(pos, stack)
 			end
 			
 			local vel = self.object:getvelocity()
