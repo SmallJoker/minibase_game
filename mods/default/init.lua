@@ -3,13 +3,12 @@
 
 -- The API documentation in here was moved into doc/lua_api.txt
 
-WATER_ALPHA = 160
-WATER_VISC = 1
 LAVA_VISC = 7
 LIGHT_MAX = 14
 
 -- Definitions made by this mod that other mods can use too
 default = {}
+default.LIGHT_MAX = LIGHT_MAX
 default.player_attached = {}
 
 -- Compatibility code for minetest_game

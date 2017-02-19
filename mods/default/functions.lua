@@ -346,7 +346,7 @@ minetest.register_abm({
 
 	action = function(pos, node)
 		local def = minetest.registered_nodes[node.name]
-		local trunk = def.trunk or "default:tree"
+		if not def.trunk then return end
 		local range = def.groups.leafdecay
 		
 		if range == 0 then return end
