@@ -346,14 +346,18 @@ minetest.register_abm({
 
 	action = function(pos, node)
 		local def = minetest.registered_nodes[node.name]
-		if not def.trunk then return end
+		if not def.trunk then
+			return
+		end
 		local range = def.groups.leafdecay
 		
-		if range == 0 then return end
-		if minetest.find_node_near(pos, range, {"ignore", trunk}) then return end
+		if range == 0 or
+				minetest.find_node_near(pos, range, {"ignore", def.trunk}) then
+			return
+		end
 		
 		local drops = minetest.get_node_drops(node.name)
-		for _, dropitem in ipairs(drops) do
+		for _, dropitem in pairs(drops) do
 			if dropitem ~= node.name then
 				minetest.add_item(pos, dropitem)
 			end

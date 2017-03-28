@@ -1,7 +1,7 @@
-base_game API
-======================
-GitHub Repo: https://github.com/SmallJoker/base_game
-Original file: https://github.com/minetest/minetest_game/blob/master/game_api.txt
+minibase_game API
+=================
+GitHub Repo: https://github.com/SmallJoker/minibase_game
+Based on: https://github.com/minetest/minetest_game/blob/master/game_api.txt
 
 Please note:
 	[XYZ] refers to a section the Minetest API
