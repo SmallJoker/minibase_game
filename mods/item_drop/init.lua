@@ -8,7 +8,7 @@ minetest.register_globalstep(function(dtime)
 	
 	for _,player in ipairs(minetest.get_connected_players()) do
 		if player:get_hp() > 0 and not player:get_player_control().LMB then
-			local pos = player:getpos()
+			local pos = player:get_pos()
 			local inv = nil
 			local sound = false
 			pos.y = pos.y + 0.5
@@ -62,7 +62,7 @@ function minetest.item_drop(itemstack, dropper, pos)
 	local obj = minetest.add_item({x=pos.x+dir.x, y=pos.y+1.5+dir.y, z=pos.z+dir.z}, drop)
 	if obj then
 		dir = {x=dir.x*2, y=dir.y*2+1, z=dir.z*2}
-		obj:setvelocity(dir)
+		obj:set_velocity(dir)
 	elseif item_name ~= "" then
 		if not minetest.registered_items[item_name] then
 			itemstack = ItemStack("")

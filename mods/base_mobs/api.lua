@@ -41,17 +41,17 @@ function base_mobs:register_mob(name, def)
 		old_y = nil,
 		
 		set_velocity = function(self, v)
-			local yaw = self.object:getyaw()
+			local yaw = self.object:get_yaw()
 			if self.drawtype == "side" then
 				yaw = yaw + (math.pi/2)
 			end
 			local x = math.sin(yaw) * -v
 			local z = math.cos(yaw) * v
-			self.object:setvelocity({x = x, y = self.object:getvelocity().y, z = z})
+			self.object:set_velocity({x = x, y = self.object:get_velocity().y, z = z})
 		end,
 		
 		get_velocity = function(self)
-			local v = self.object:getvelocity()
+			local v = self.object:get_velocity()
 			return (v.x^2 + v.z^2) ^ (0.5)
 		end,
 		
@@ -97,7 +97,7 @@ function base_mobs:register_mob(name, def)
 		
 		on_step = function(self, dtime)
 			self.lifetimer = self.lifetimer - dtime
-			local my_pos = self.object:getpos()
+			local my_pos = self.object:get_pos()
 			if self.lifetimer <= 0 and not self.tamed then
 				local player_count = 0
 				for _,obj in ipairs(minetest.get_objects_inside_radius(my_pos, 12)) do
@@ -111,12 +111,12 @@ function base_mobs:register_mob(name, def)
 				end
 			end
 			
-			local vel = self.object:getvelocity()
+			local vel = self.object:get_velocity()
 			local node = minetest.get_node(my_pos).name
 			local real_speed = self:get_speed(self.state)
 			--[[local accel = {x = 0, y = 0, z = 0}
 			if vel.y > 0.1 then
-				local yaw = self.object:getyaw()
+				local yaw = self.object:get_yaw()
 				if self.drawtype == "side" then
 					yaw = yaw + (math.pi/2)
 				end
@@ -130,7 +130,7 @@ function base_mobs:register_mob(name, def)
 				else
 					accel.y = -10
 				end
-				self.object:setacceleration(accel)
+				self.object:set_acceleration(accel)
 				if real_speed == 0 then
 					self:set_animation("walk")
 				end
@@ -146,7 +146,7 @@ function base_mobs:register_mob(name, def)
 			-- Jump
 			if self:get_velocity() < real_speed - 0.05 and vel.y == 0 then
 				vel.y = 6.5
-				self.object:setvelocity(vel)
+				self.object:set_velocity(vel)
 			else
 				self:set_velocity(real_speed)
 			end
@@ -204,7 +204,7 @@ function base_mobs:register_mob(name, def)
 			local p, vec, dist = false, false, false
 			if self.aggressive and not self.to_player then
 				for _,player in ipairs(minetest.get_connected_players()) do
-					p = player:getpos()
+					p = player:get_pos()
 					vec = vector.subtract(p, my_pos)
 					dist = (vec.x^2 + vec.y^2 + vec.z^2) ^ 0.5
 					
@@ -217,7 +217,7 @@ function base_mobs:register_mob(name, def)
 			
 			if self.follow ~= "" and not self.to_player then
 				for _,player in ipairs(minetest.get_connected_players()) do
-					p = player:getpos()
+					p = player:get_pos()
 					vec = vector.subtract(p, my_pos)
 					dist = (vec.x^2 + vec.y^2 + vec.z^2) ^ 0.5
 					
@@ -239,7 +239,7 @@ function base_mobs:register_mob(name, def)
 			
 			if self.to_player then
 				if not dist then
-					p = self.to_player:getpos()
+					p = self.to_player:get_pos()
 					if not p then
 						self.to_player = nil
 						self:set_animation("stand")
@@ -280,7 +280,7 @@ function base_mobs:register_mob(name, def)
 				if p.x > my_pos.x then
 					yaw = yaw + math.pi
 				end
-				self.object:setyaw(yaw)
+				self.object:set_yaw(yaw)
 				
 				if self.aggressive then
 					self:set_animation("run")
@@ -300,7 +300,7 @@ function base_mobs:register_mob(name, def)
 				if r == 10 or (r == 11 and other_state == "walk") then
 					self:set_animation(other_state)
 				elseif r <= 4 then
-					self.object:setyaw(self.object:getyaw() + (math.random(-90, 90) / 180 * math.pi))
+					self.object:set_yaw(self.object:get_yaw() + (math.random(-90, 90) / 180 * math.pi))
 				end
 			end
 		end,
@@ -310,9 +310,9 @@ function base_mobs:register_mob(name, def)
 				self.aggressive = true
 			end
 			self.object:set_armor_groups({fleshy = self.armor})
-			self.object:setacceleration({x = 0, y = -10, z = 0})
+			self.object:set_acceleration({x = 0, y = -10, z = 0})
 			self:set_animation("stand")
-			self.object:setyaw(math.random(360) / 180 * math.pi)
+			self.object:set_yaw(math.random(360) / 180 * math.pi)
 			self.lifetimer = self.lifetimer - dtime_s
 			if staticdata then
 				local tmp = minetest.deserialize(staticdata)
@@ -348,7 +348,7 @@ function base_mobs:register_mob(name, def)
 				end
 				local stack = nil
 				minetest.sound_play("player_death", {object = self.object, gain = 0.4})
-				minetest.sound_play("hit_death", {pos = hitter:getpos(), gain = 0.4})
+				minetest.sound_play("hit_death", {pos = hitter:get_pos(), gain = 0.4})
 				for _,drop in ipairs(self.drops) do
 					if math.random(drop.chance) == 1 then
 						stack = ItemStack(drop.name.." "..math.random(drop.min, drop.max))
@@ -361,20 +361,20 @@ function base_mobs:register_mob(name, def)
 					hitter:get_inventory():add_item("main", stack)
 					return
 				end
-				local pos = self.object:getpos()
+				local pos = self.object:get_pos()
 				pos.y = pos.y + 0.4
 				minetest.add_item(pos, stack)
 			end
 			
-			local vel = self.object:getvelocity()
+			local vel = self.object:get_velocity()
 			if vel.y == 0 and (self.state == "stand" or self.state == "walk") then
 				vel.y = 4
-				self.object:setvelocity(vel)
+				self.object:set_velocity(vel)
 				self:set_animation("walk")
 			end
 			
 			minetest.sound_play("player_damage", {object = self.object, gain = 0.25})
-			minetest.sound_play("hit", {pos = hitter:getpos(), gain = 0.4})
+			minetest.sound_play("hit", {pos = hitter:get_pos(), gain = 0.4})
 			
 			if self.type == "defensive" then
 				if is_player then

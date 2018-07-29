@@ -80,7 +80,7 @@ screwdriver.handler = function(itemstack, user, pointed_thing, mode, uses)
 		minetest.swap_node(pos, node)
 	end
 
-	if not minetest.setting_getbool("creative_mode") then
+	if not minetest.settings:get_bool("creative_mode") then
 		itemstack:add_wear(65535 / ((uses or 200) - 1))
 	end
 

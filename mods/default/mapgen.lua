@@ -349,7 +349,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local rand = PseudoRandom(seed % 8000)
 	for z = minp.z + 2, maxp.z - 2, 4 do
 	for x = minp.x + 2, maxp.x - 2, 4 do
-		local papyrus_amount = math.floor(n_papyrus:get2d({x=x, y=z}) * 6 - 2)
+		local papyrus_amount = math.floor(n_papyrus:get_2d({x=x, y=z}) * 6 - 2)
 		for i = 1, papyrus_amount do
 			local p_pos = {
 				x = rand:next(x - 2, x + 2), 
@@ -363,7 +363,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 			end
 		end
 		
-		local cactus_amount = math.floor(n_cactus:get2d({x=x, y=z}) * 3)
+		local cactus_amount = math.floor(n_cactus:get_2d({x=x, y=z}) * 3)
 		for i = 1, cactus_amount do
 			local p_pos = {
 				x = rand:next(x - 2, x + 2), 

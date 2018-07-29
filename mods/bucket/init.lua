@@ -125,7 +125,7 @@ minetest.register_craftitem("bucket:bucket_empty", {
 			if inv:room_for_item("main", giving_back) then
 				inv:add_item("main", giving_back)
 			else
-				local pos = user:getpos()
+				local pos = user:get_pos()
 				pos.y = math.floor(pos.y + 0.5)
 				minetest.add_item(pos, giving_back)
 			end

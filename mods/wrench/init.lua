@@ -15,9 +15,8 @@ local LATEST_SERIALIZATION_VERSION = 1
 
 -- Boilerplate to support localized strings if intllib mod is installed.
 S = 1
-intllib = intllib or false
-if intllib then
-	S = intllib.Getter()
+if minetest.global_exists("intllib") then
+	S = intllib.make_gettext_pair()
 else
 	S = function(s) return s end
 end

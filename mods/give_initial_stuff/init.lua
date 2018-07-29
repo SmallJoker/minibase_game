@@ -1,4 +1,4 @@
-if minetest.setting_getbool("give_initial_stuff") then
+if minetest.settings:get_bool("give_initial_stuff") then
 	minetest.register_on_newplayer(function(player)
 		local inv = player:get_inventory()
 		inv:add_item("main", "default:pick_stone")

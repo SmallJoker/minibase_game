@@ -106,11 +106,11 @@ local death_messages = {
 }
 
 minetest.register_on_dieplayer(function(player)
-	if minetest.setting_getbool("creative_mode") then
+	if minetest.settings:get_bool("creative_mode") then
 		return
 	end
 	
-	local pos = vector.round(player:getpos())
+	local pos = vector.round(player:get_pos())
 	pos.y = pos.y - 1
 	
 	local spawnPos = minetest.setting_get_pos("static_spawnpoint")

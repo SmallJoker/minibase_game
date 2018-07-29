@@ -38,7 +38,7 @@ dofile(modpath.."/tools.lua")
 dofile(modpath.."/craftitems.lua")
 dofile(modpath.."/crafting.lua")
 dofile(modpath.."/mapgen.lua")
-if not minetest.setting_getbool("disable_player_model") then
+if not minetest.settings:get_bool("disable_player_model") then
 	dofile(modpath.."/player.lua")
 end
 dofile(modpath.."/trees.lua")
